@@ -1,0 +1,13 @@
+.graph {
+  display: grid;
+  grid-template-columns: auto 1fr;
+}
+
+.graph rect {
+  pointer-events: all;
+}
+
+.info {
+  color: #fffa;
+  font-size: var(--font-size-0);
+}

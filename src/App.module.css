@@ -1,0 +1,80 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  gap: var(--size-1);
+  block-size: 100%;
+  max-width: var(--size-8);
+  margin-inline: auto;
+  padding-block-end: var(--size-2);
+}
+
+.display {
+  overflow: hidden;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--size-2);
+  padding-block-start: var(--size-1);
+  padding-block-end: var(--size-3);
+  padding-inline: var(--size-0);
+  background: linear-gradient(
+      to right,
+      #fff2 calc(50% - 2px),
+      #0000 calc(50% - 2px),
+      #fff5 calc(50% + 2px),
+      #fff2 0%
+    )
+    no-repeat;
+  background-size: 100% calc(100% - var(--size-2));
+  border-radius: var(--radius-3);
+}
+
+.info {
+  position: absolute;
+  block-size: var(--size-2);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  align-items: center;
+  grid-template-columns: 1fr auto 1fr;
+  gap: var(--size-1);
+  padding-inline: var(--size-2);
+  background-color: #fff3;
+  z-index: 1;
+  box-shadow: 0 0 var(--size-1) #0005;
+  font-size: var(--font-size-0);
+  line-height: var(--size-2);
+}
+
+.info > *:first-child {
+  text-align: start;
+}
+
+.info > *:last-child {
+  text-align: end;
+}
+
+.currencyName {
+  opacity: 0.5;
+}
+
+.currencyDate {
+  text-align: center;
+}
+
+.swap-button {
+  --size: var(--size-3);
+  position: absolute;
+  left: calc(50% - var(--size) / 2);
+  top: calc(50% - var(--size) / 2);
+  width: var(--size);
+  height: var(--size);
+  color: #ccc;
+  background-color: #333;
+  border-radius: var(--radius-round);
+  box-shadow: 0 0 var(--size-1) #000a;
+  padding: var(--size-0);
+  border: 1px solid #fff1;
+}

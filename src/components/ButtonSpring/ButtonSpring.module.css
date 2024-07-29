@@ -1,0 +1,3 @@
+.scale:not(:disabled) {
+  transform: scale(var(--scale, 1));
+}

@@ -1,0 +1,44 @@
+{
+  "name": "currency-converter",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "vite --host",
+    "build": "tsc -b && vite build",
+    "deploy": "gh-pages -d dist",
+    "format": "prettier --write .",
+    "lint": "eslint --fix . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "prepare": "husky install",
+    "preview": "vite preview",
+    "update:minor": "npx npm-check-updates --target minor -u"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^17.8.1",
+    "@commitlint/config-conventional": "^17.8.1",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "@vite-pwa/assets-generator": "^0.2.4",
+    "@vitejs/plugin-react": "^4.3.1",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-react-refresh": "^0.4.9",
+    "gh-pages": "^5.0.0",
+    "husky": "^8.0.3",
+    "prettier": "^3.3.3",
+    "typescript": "^5.5.4",
+    "vite": "^5.3.5",
+    "vite-plugin-pwa": "^0.20.1",
+    "workbox-core": "^7.1.0"
+  }
+}

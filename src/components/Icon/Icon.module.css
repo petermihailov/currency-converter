@@ -1,0 +1,4 @@
+.icon {
+  inline-size: var(--font-size-3);
+  aspect-ratio: 1;
+}

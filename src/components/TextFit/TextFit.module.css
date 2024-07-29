@@ -1,0 +1,19 @@
+.input {
+  max-inline-size: 100%;
+  max-block-size: 100%;
+}
+
+.input text {
+  fill: var(--color-text);
+  font-size: 16px !important;
+}
+
+.hiddenSpan {
+  font-size: 16px !important;
+  position: fixed !important;
+  left: -9999px !important;
+  top: -9999px !important;
+  white-space: nowrap !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
