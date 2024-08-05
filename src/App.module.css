@@ -15,7 +15,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--size-2);
-  padding-block-start: var(--size-1);
+  padding-block-start: var(--size-0);
   padding-block-end: var(--size-3);
   padding-inline: var(--size-0);
   background: linear-gradient(
@@ -40,7 +40,7 @@
   align-items: center;
   grid-template-columns: 1fr auto 1fr;
   gap: var(--size-1);
-  padding-inline: var(--size-2);
+  padding-inline: var(--radius-2);
   background-color: #fff3;
   z-index: 1;
   box-shadow: 0 0 var(--size-1) #0005;
@@ -74,7 +74,7 @@
   color: #ccc;
   background-color: #333;
   border-radius: var(--radius-round);
-  box-shadow: 0 0 var(--size-1) #000a;
+  box-shadow: 0 0 var(--size-1) #0005;
   padding: var(--size-0);
   border: 1px solid #fff1;
 }

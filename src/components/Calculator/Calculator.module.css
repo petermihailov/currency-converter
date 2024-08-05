@@ -1,8 +1,11 @@
 .numpad {
+  --radius: var(--radius-3);
+
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   font-size: var(--font-size-4);
   line-height: var(--font-lineheight-1);
+  padding-inline: var(--size-0);
   gap: 2px;
   color: var(--color-text);
   font-weight: 150;
@@ -48,19 +51,19 @@
 }
 
 .round-top-left {
-  border-radius: var(--radius-3) 0 0 0;
+  border-radius: var(--radius) 0 0 0;
 }
 
 .round-top-right {
-  border-radius: 0 var(--radius-3) 0 0;
+  border-radius: 0 var(--radius) 0 0;
 }
 
 .round-bottom-left {
-  border-radius: 0 0 0 var(--radius-3);
+  border-radius: 0 0 0 var(--radius);
 }
 
 .round-bottom-right {
-  border-radius: 0 0 var(--radius-3) 0;
+  border-radius: 0 0 var(--radius) 0;
 }
 
 /*.numpad button:active:not(:disabled) {*/

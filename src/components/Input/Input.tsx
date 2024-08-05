@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { memo, useLayoutEffect, useRef } from 'react'
+import { memo, useEffect, useLayoutEffect, useRef } from 'react'
 
 import { Currency } from './Currency'
 import { getCurrencyCode } from './Input.utils.ts'
@@ -14,6 +14,7 @@ const animateOptions: KeyframeAnimationOptions = {
   fill: 'forwards',
   easing: 'ease-out',
   duration: 250,
+  iterations: 1,
 }
 
 interface InputProps {
@@ -34,19 +35,16 @@ export const Input = memo(
     const refCurrencyCurr = useRef<HTMLDivElement>(null)
     const refPrevState = useRef({ code: code })
 
-    useSwipe(refContainer, {
-      onSwipeUp: () => onChange?.(getCurrencyCode(1, code, codeOpposite)),
-      onSwipeDown: () => onChange?.(getCurrencyCode(-1, code, codeOpposite)),
-    })
-
     useLayoutEffect(() => {
       const prev = refCurrencyPrev.current!
       const curr = refCurrencyCurr.current!
 
+      const gap = 0.125
+
       if (refPrevState.current.code === getCurrencyCode(1, code, codeOpposite)) {
         curr.animate(
           [
-            { transform: 'translateY(-100%)', opacity: '0' },
+            { transform: `translateY(-100%) translateY(${-1 * gap}rem)`, opacity: '0' },
             { transform: 'translateY(0)', opacity: '1' },
           ],
           animateOptions,
@@ -54,8 +52,9 @@ export const Input = memo(
 
         prev.animate(
           [
-            { transform: 'translateY(-100%)', opacity: '1' },
-            { transform: 'translateY(0)', opacity: '0' },
+            { transform: `translateY(-100%)`, opacity: '1' },
+            { opacity: '0', offset: 0.6 },
+            { transform: `translateY(0) translateY(${gap}rem)`, opacity: '0' },
           ],
           animateOptions,
         )
@@ -64,7 +63,7 @@ export const Input = memo(
       if (refPrevState.current.code === getCurrencyCode(-1, code, codeOpposite)) {
         curr.animate(
           [
-            { transform: 'translateY(100%)', opacity: '0' },
+            { transform: `translateY(100%) translateY(${gap}rem)`, opacity: '0' },
             { transform: 'translateY(0)', opacity: '1' },
           ],
           animateOptions,
@@ -73,7 +72,8 @@ export const Input = memo(
         prev.animate(
           [
             { transform: 'translateY(-100%)', opacity: '1' },
-            { transform: 'translateY(-200%)', opacity: '0' },
+            { opacity: '0', offset: 0.6 },
+            { transform: `translateY(-200%) translateY(${-1 * gap}rem)`, opacity: '0' },
           ],
           animateOptions,
         )
@@ -81,6 +81,33 @@ export const Input = memo(
 
       refPrevState.current.code = code
     }, [code, codeOpposite])
+
+    // change currency code
+
+    useSwipe(refContainer, {
+      onSwipeUp: () => onChange?.(getCurrencyCode(1, code, codeOpposite)),
+      onSwipeDown: () => onChange?.(getCurrencyCode(-1, code, codeOpposite)),
+    })
+
+    useEffect(() => {
+      const listener = (e: KeyboardEvent) => {
+        if (e.key === 'ArrowUp') {
+          onChange?.(getCurrencyCode(1, code, codeOpposite))
+        }
+
+        if (e.key === 'ArrowDown') {
+          onChange?.(getCurrencyCode(-1, code, codeOpposite))
+        }
+      }
+
+      if (active) {
+        document.body.addEventListener('keydown', listener)
+      }
+
+      return () => {
+        document.body.removeEventListener('keydown', listener)
+      }
+    }, [active, code, codeOpposite, onChange])
 
     return (
       <div

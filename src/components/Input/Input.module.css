@@ -1,6 +1,6 @@
 .input {
   --block-size-content: calc(var(--size-2));
-  --block-padding: var(--size-000);
+  --block-padding: 0;
   --block-size: calc(var(--block-size-content) + var(--block-padding) * 2);
   --value-padding: var(--size-2);
 
