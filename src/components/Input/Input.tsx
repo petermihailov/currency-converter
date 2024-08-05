@@ -39,12 +39,11 @@ export const Input = memo(
       const prev = refCurrencyPrev.current!
       const curr = refCurrencyCurr.current!
 
-      const gap = 0.125
-
       if (refPrevState.current.code === getCurrencyCode(1, code, codeOpposite)) {
         curr.animate(
           [
-            { transform: `translateY(-100%) translateY(${-1 * gap}rem)`, opacity: '0' },
+            { transform: `translateY(-100%)`, opacity: '0' },
+            { opacity: '0', offset: 0.5 },
             { transform: 'translateY(0)', opacity: '1' },
           ],
           animateOptions,
@@ -53,8 +52,8 @@ export const Input = memo(
         prev.animate(
           [
             { transform: `translateY(-100%)`, opacity: '1' },
-            { opacity: '0', offset: 0.6 },
-            { transform: `translateY(0) translateY(${gap}rem)`, opacity: '0' },
+            { opacity: '0', offset: 0.8 },
+            { transform: `translateY(0)`, opacity: '0' },
           ],
           animateOptions,
         )
@@ -63,7 +62,8 @@ export const Input = memo(
       if (refPrevState.current.code === getCurrencyCode(-1, code, codeOpposite)) {
         curr.animate(
           [
-            { transform: `translateY(100%) translateY(${gap}rem)`, opacity: '0' },
+            { transform: `translateY(100%)`, opacity: '0' },
+            { opacity: '0', offset: 0.5 },
             { transform: 'translateY(0)', opacity: '1' },
           ],
           animateOptions,
@@ -72,8 +72,8 @@ export const Input = memo(
         prev.animate(
           [
             { transform: 'translateY(-100%)', opacity: '1' },
-            { opacity: '0', offset: 0.6 },
-            { transform: `translateY(-200%) translateY(${-1 * gap}rem)`, opacity: '0' },
+            { opacity: '0', offset: 0.8 },
+            { transform: `translateY(-200%)`, opacity: '0' },
           ],
           animateOptions,
         )
