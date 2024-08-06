@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { memo, useEffect, useLayoutEffect, useRef } from 'react'
+import { memo, useLayoutEffect, useRef } from 'react'
 
 import { Currency } from './Currency'
 import { getCurrencyCode } from './Input.utils.ts'
@@ -88,26 +88,6 @@ export const Input = memo(
       onSwipeUp: () => onChange?.(getCurrencyCode(1, code, codeOpposite)),
       onSwipeDown: () => onChange?.(getCurrencyCode(-1, code, codeOpposite)),
     })
-
-    useEffect(() => {
-      const listener = (e: KeyboardEvent) => {
-        if (e.key === 'ArrowUp') {
-          onChange?.(getCurrencyCode(1, code, codeOpposite))
-        }
-
-        if (e.key === 'ArrowDown') {
-          onChange?.(getCurrencyCode(-1, code, codeOpposite))
-        }
-      }
-
-      if (active) {
-        document.body.addEventListener('keydown', listener)
-      }
-
-      return () => {
-        document.body.removeEventListener('keydown', listener)
-      }
-    }, [active, code, codeOpposite, onChange])
 
     return (
       <div

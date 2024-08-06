@@ -1,10 +1,10 @@
-import type { MouseEventHandler } from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 
 import { getUsdRatio } from './api/getUsdRatio'
 import { ButtonSpring } from './components/ButtonSpring'
 import { Calculator } from './components/Calculator'
 import { Input } from './components/Input'
+import { getCurrencyCode } from './components/Input/Input.utils.ts'
 import { CURRENCY } from './constants'
 import { Storage } from './lib/LocalStorage'
 import type { CodesRatio, CurrencyCode, DateRatio } from './types/currencies'
@@ -50,18 +50,23 @@ export const App = () => {
     code: pairCache!.right,
     textValue: '0',
   })
+
   const [currencyLeft, setCurrencyLeft] = useState<CurrencyType>({
     code: pairCache!.left,
     textValue: '0',
   })
+
   const [ratio, setRatio] = useState<DateRatio>({
     date: '',
     codes: {} as CodesRatio,
   })
+
   const [activeInput, setActiveInput] = useState<'left' | 'right'>(pairCache!.active)
 
-  const swap: MouseEventHandler<HTMLButtonElement> = (e) => {
-    e.currentTarget.animate(
+  const refSwapButton = useRef<HTMLButtonElement>(null)
+
+  const swap = useCallback(() => {
+    refSwapButton.current!.animate(
       [
         { transform: 'scale(var(--scale, 1.0)) rotate(0deg)' },
         { transform: 'scale(var(--scale, 1.0)) rotate(180deg)' },
@@ -78,9 +83,9 @@ export const App = () => {
 
     setCurrencyRight(right)
     setCurrencyLeft(left)
-  }
+  }, [currencyLeft, currencyRight])
 
-  const changeActiveInput = (active: 'left' | 'right') => {
+  const changeActiveInput = useCallback((active: 'left' | 'right') => {
     if (active === 'left') {
       setCurrencyLeft((prev) => ({
         ...prev,
@@ -94,23 +99,67 @@ export const App = () => {
     }
 
     setActiveInput(active)
-  }
+  }, [])
 
-  const inputLeft = (textValue: string) => {
-    setCurrencyLeft((prev) => ({ ...prev, textValue }))
-    setCurrencyRight((prev) => ({
-      ...prev,
-      textValue: convert(textValue, currencyLeft.code, currencyRight.code, ratio),
-    }))
-  }
+  const inputLeft = useCallback(
+    (textValue: string) => {
+      setCurrencyLeft((prev) => ({ ...prev, textValue }))
+      setCurrencyRight((prev) => ({
+        ...prev,
+        textValue: convert(textValue, currencyLeft.code, currencyRight.code, ratio),
+      }))
+    },
+    [currencyLeft.code, currencyRight.code, ratio],
+  )
 
-  const inputRight = (textValue: string) => {
-    setCurrencyRight((prev) => ({ ...prev, textValue }))
-    setCurrencyLeft((prev) => ({
-      ...prev,
-      textValue: convert(textValue, currencyRight.code, currencyLeft.code, ratio),
-    }))
-  }
+  const inputRight = useCallback(
+    (textValue: string) => {
+      setCurrencyRight((prev) => ({ ...prev, textValue }))
+      setCurrencyLeft((prev) => ({
+        ...prev,
+        textValue: convert(textValue, currencyRight.code, currencyLeft.code, ratio),
+      }))
+    },
+    [currencyLeft.code, currencyRight.code, ratio],
+  )
+
+  const onChangeLeft = useCallback(
+    (code: CurrencyCode) => {
+      setCurrencyLeft((prev) => ({ ...prev, code }))
+
+      if (activeInput === 'right') {
+        setCurrencyLeft((prev) => ({
+          ...prev,
+          textValue: convert(currencyRight.textValue, currencyRight.code, code, ratio),
+        }))
+      } else {
+        setCurrencyRight((prev) => ({
+          ...prev,
+          textValue: convert(currencyLeft.textValue, code, currencyRight.code, ratio),
+        }))
+      }
+    },
+    [activeInput, currencyLeft.textValue, currencyRight.code, currencyRight.textValue, ratio],
+  )
+
+  const onChangeRight = useCallback(
+    (code: CurrencyCode) => {
+      setCurrencyRight((prev) => ({ ...prev, code }))
+
+      if (activeInput === 'right') {
+        setCurrencyLeft((prev) => ({
+          ...prev,
+          textValue: convert(currencyRight.textValue, code, currencyLeft.code, ratio),
+        }))
+      } else {
+        setCurrencyRight((prev) => ({
+          ...prev,
+          textValue: convert(currencyLeft.textValue, currencyLeft.code, code, ratio),
+        }))
+      }
+    },
+    [activeInput, currencyLeft.code, currencyLeft.textValue, currencyRight.textValue, ratio],
+  )
 
   /* Get ratio */
   useEffect(() => {
@@ -130,6 +179,47 @@ export const App = () => {
     })
   }, [currencyRight.code, currencyLeft.code, activeInput])
 
+  /* Change codes keyboard */
+  useEffect(() => {
+    const code: CurrencyCode = activeInput === 'left' ? currencyLeft.code : currencyRight.code
+    const codeOpposite: CurrencyCode =
+      activeInput === 'left' ? currencyRight.code : currencyLeft.code
+
+    const onChange = activeInput === 'left' ? onChangeLeft : onChangeRight
+    const onChangeOpposite = activeInput === 'left' ? onChangeRight : onChangeLeft
+
+    const listener = (e: KeyboardEvent) => {
+      if (e.key === 'r') {
+        swap()
+      }
+
+      if (e.shiftKey) {
+        if (e.code === 'ArrowUp') {
+          onChangeOpposite(getCurrencyCode(1, codeOpposite, code))
+        }
+
+        if (e.code === 'ArrowDown') {
+          onChangeOpposite(getCurrencyCode(-1, codeOpposite, code))
+        }
+      } else {
+        if (e.code === 'ArrowUp') {
+          onChange(getCurrencyCode(1, code, codeOpposite))
+        }
+
+        if (e.code === 'ArrowDown') {
+          onChange(getCurrencyCode(-1, code, codeOpposite))
+        }
+      }
+    }
+
+    document.body.addEventListener('keydown', listener)
+
+    return () => {
+      document.body.removeEventListener('keydown', listener)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeInput, currencyLeft.code, currencyRight.code])
+
   return (
     <div className={classes.app}>
       <div className={classes.display}>
@@ -140,21 +230,7 @@ export const App = () => {
           codeOpposite={currencyRight.code}
           onClick={() => changeActiveInput('left')}
           ratio={ratio}
-          onChange={(code) => {
-            setCurrencyLeft((prev) => ({ ...prev, code }))
-
-            if (activeInput === 'right') {
-              setCurrencyLeft((prev) => ({
-                ...prev,
-                textValue: convert(currencyRight.textValue, currencyRight.code, code, ratio),
-              }))
-            } else {
-              setCurrencyRight((prev) => ({
-                ...prev,
-                textValue: convert(currencyLeft.textValue, code, currencyRight.code, ratio),
-              }))
-            }
-          }}
+          onChange={onChangeLeft}
         />
 
         <Input
@@ -165,24 +241,10 @@ export const App = () => {
           codeOpposite={currencyLeft.code}
           onClick={() => changeActiveInput('right')}
           ratio={ratio}
-          onChange={(code) => {
-            setCurrencyRight((prev) => ({ ...prev, code }))
-
-            if (activeInput === 'right') {
-              setCurrencyLeft((prev) => ({
-                ...prev,
-                textValue: convert(currencyRight.textValue, code, currencyLeft.code, ratio),
-              }))
-            } else {
-              setCurrencyRight((prev) => ({
-                ...prev,
-                textValue: convert(currencyLeft.textValue, currencyLeft.code, code, ratio),
-              }))
-            }
-          }}
+          onChange={onChangeRight}
         />
 
-        <ButtonSpring className={classes.swapButton} onClick={swap}>
+        <ButtonSpring ref={refSwapButton} className={classes.swapButton} onClick={swap}>
           <svg fill="none" viewBox="0 0 12 12">
             <path
               fill="currentColor"
@@ -199,6 +261,7 @@ export const App = () => {
       </div>
 
       <Calculator
+        className={classes.calculator}
         name={activeInput + (activeInput === 'left' ? currencyLeft.code : currencyRight.code)}
         textValue={activeInput === 'left' ? currencyLeft.textValue : currencyRight.textValue}
         onTextChange={activeInput === 'left' ? inputLeft : inputRight}

@@ -7,6 +7,7 @@ import { Icon } from '../Icon'
 import classes from './Calculator.module.css'
 
 interface CalculatorProps {
+  className?: string
   name: string
   textValue?: string
   onTextChange: (value: string) => void
@@ -21,7 +22,7 @@ const math: Record<Operator, (a: number, b?: number) => number> = {
   '/': (a, b = 1) => a / b,
 }
 
-export const Calculator = ({ name, textValue = '0', onTextChange }: CalculatorProps) => {
+export const Calculator = ({ className, name, textValue = '0', onTextChange }: CalculatorProps) => {
   const [displayedOperator, setDisplayedOperator] = useState<Operator | null>(null)
 
   const lastOperation = useRef<{
@@ -264,7 +265,11 @@ export const Calculator = ({ name, textValue = '0', onTextChange }: CalculatorPr
   }, [name])
 
   return (
-    <div className={classes.numpad} onPointerDown={handleInput} data-testid="calculator">
+    <div
+      className={clsx(className, classes.numpad)}
+      onPointerDown={handleInput}
+      data-testid="calculator"
+    >
       <ButtonSpring data-operation="reset" className={clsx(classes.accent, classes.roundTopLeft)}>
         C
       </ButtonSpring>
