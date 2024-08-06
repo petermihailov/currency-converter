@@ -19,14 +19,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
 
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff2}'],
       },
-
-      includeAssets: [
-        // fonts
-        'fonts/oook.woff2',
-        'fonts/sfns.woff2',
-      ],
 
       manifest: {
         name: 'Currency',
