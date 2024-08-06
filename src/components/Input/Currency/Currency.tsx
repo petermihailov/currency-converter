@@ -29,7 +29,7 @@ export const Currency = memo(
         <div className={clsx(classes.currency)}>
           <img
             className={classes.flag}
-            src={`/flags/${CURRENCY[currencyCode].country}.webp`}
+            src={`./flags/${CURRENCY[currencyCode].country}.webp`}
             alt={currencyCode}
           />
           {CURRENCY[currencyCode].currency}
