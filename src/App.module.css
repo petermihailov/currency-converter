@@ -17,7 +17,7 @@
   gap: var(--size-2);
   padding-block-start: var(--size-0);
   padding-block-end: var(--size-3);
-  padding-inline: var(--size-0);
+  padding-inline: var(--size-1);
   background: linear-gradient(
       to right,
       #fff2 calc(50% - 2px),

@@ -12,18 +12,16 @@
   font-family: var(--font-sans-alt);
 }
 
-.numpad > * {
+.numpad > :where(button) {
   display: grid;
   place-items: center;
   block-size: 2.5em;
   background-color: #fff1;
   border: 1px solid #ffffff04;
-  transition-property: box-shadow, background-color;
-  transition-duration: 100ms;
-  transition-timing-function: ease;
+  transition: background-color 100ms;
 }
 
-.numpad > button > * {
+.numpad > button * {
   pointer-events: none;
 }
 
@@ -65,8 +63,3 @@
 .round-bottom-right {
   border-radius: 0 0 var(--radius) 0;
 }
-
-/*.numpad button:active:not(:disabled) {*/
-/*  background-color: #fff3;*/
-/*  transition: none;*/
-/*}*/

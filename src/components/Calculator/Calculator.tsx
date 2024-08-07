@@ -15,9 +15,10 @@ interface CalculatorProps {
 
 type Operator = '+' | '-' | '*' | '/'
 
+const precision = 1000
 const math: Record<Operator, (a: number, b?: number) => number> = {
-  '+': (a, b = 0) => a + b,
-  '-': (a, b = 0) => a - b,
+  '+': (a, b = 0) => (a * precision + b * precision) / precision,
+  '-': (a, b = 0) => (a * precision - b * precision) / precision,
   '*': (a, b = 1) => a * b,
   '/': (a, b = 1) => a / b,
 }
@@ -176,6 +177,8 @@ export const Calculator = ({ className, name, textValue = '0', onTextChange }: C
   const addPoint = useCallback(() => {
     needClear.current = false
 
+    if (textValue.includes('.')) return
+
     if (textValue === '-') {
       onTextChange('-0.')
       return
@@ -321,9 +324,7 @@ export const Calculator = ({ className, name, textValue = '0', onTextChange }: C
       <ButtonSpring data-number="0" className={clsx(classes.zero, classes.roundBottomLeft)}>
         <div style={{ gridColumn: 2 }}>0</div>
       </ButtonSpring>
-      <ButtonSpring data-point="" disabled={textValue.includes('.')}>
-        .
-      </ButtonSpring>
+      <ButtonSpring data-point>.</ButtonSpring>
     </div>
   )
 }

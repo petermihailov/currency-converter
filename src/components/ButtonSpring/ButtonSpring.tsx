@@ -23,15 +23,16 @@ const ButtonSpring = forwardRef<HTMLButtonElement, ButtonBaseProps>(
           from: 1,
           options: {
             namespace: '--scale',
-            tension: 200,
-            startVelocity: 5,
+            tension: 450,
+            friction: 25,
+            startVelocity: 30,
           },
           onUpdate: ({ namespace, value }) => {
             button.style.setProperty(namespace, value.toString())
           },
         })
 
-        const enter = () => physics.go(0.9)
+        const enter = () => physics.go(0.93)
         const leave = () => physics.go(1)
 
         ;['keydown', 'pointerdown'].forEach((type) => button.addEventListener(type, enter))
