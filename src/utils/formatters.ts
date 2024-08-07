@@ -1,6 +1,10 @@
 import type { CurrencyCode } from '../types/currencies'
 
 export const formatCurrency = (code: CurrencyCode, value: number) => {
+  if (Number.isNaN(value)) {
+    return '--.--'
+  }
+
   const valueStr = value.toString().match(/0\.[0]{2,}[0-9]/)?.[0]
   const maximumFractionDigits = valueStr?.length ? valueStr.length - 1 : 2
 
@@ -33,5 +37,7 @@ export const formatNumberInputActive = (value: string) => {
 }
 
 export const formatDate = (date: Date | string) => {
+  if (!date) return ''
+
   return new Date(date).toLocaleDateString('ru-RU')
 }
