@@ -224,6 +224,7 @@ export const App = () => {
     <div className={classes.app}>
       <div className={classes.display}>
         <Input
+          position="left"
           active={activeInput === 'left'}
           value={currencyLeft.textValue}
           code={currencyLeft.code}
@@ -234,6 +235,7 @@ export const App = () => {
         />
 
         <Input
+          position="right"
           reverse
           active={activeInput === 'right'}
           value={currencyRight.textValue}

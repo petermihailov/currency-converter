@@ -12,6 +12,7 @@
     "lint": "eslint --fix . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "prepare": "husky install",
     "preview": "vite preview",
+    "test:pw": "npx playwright test --headed",
     "update:minor": "npx npm-check-updates --target minor -u"
   },
   "dependencies": {
@@ -22,6 +23,8 @@
   "devDependencies": {
     "@commitlint/cli": "^17.8.1",
     "@commitlint/config-conventional": "^17.8.1",
+    "@playwright/test": "^1.54.1",
+    "@types/node": "^24.1.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^7.18.0",

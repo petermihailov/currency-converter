@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useReducer } from 'react'
 
 import { ButtonSpring } from '../ButtonSpring'
 import { Icon } from '../Icon'
@@ -16,256 +16,164 @@ interface CalculatorProps {
 type Operator = '+' | '-' | '*' | '/'
 
 const precision = 1000
-const math: Record<Operator, (a: number, b?: number) => number> = {
-  '+': (a, b = 0) => (a * precision + b * precision) / precision,
-  '-': (a, b = 0) => (a * precision - b * precision) / precision,
-  '*': (a, b = 1) => a * b,
-  '/': (a, b = 1) => a / b,
+const math: Record<Operator, (a: number, b: number) => number> = {
+  '+': (a, b) => (a * precision + b * precision) / precision,
+  '-': (a, b) => (a * precision - b * precision) / precision,
+  '*': (a, b) => a * b,
+  '/': (a, b) => a / b,
+}
+
+interface State {
+  display: string
+  value: number | null
+  operator: Operator | null
+  pendingValue: number | null
+  overwrite: boolean
+  highlightedOperator: Operator | null
+}
+
+type Action =
+  | { type: 'input'; digit: string }
+  | { type: 'decimal' }
+  | { type: 'clear' }
+  | { type: 'backspace' }
+  | { type: 'evaluate' }
+  | { type: 'operator'; operator: Operator }
+
+const INITIAL_STATE: State = {
+  display: '0',
+  value: null,
+  operator: null,
+  pendingValue: null,
+  overwrite: true,
+  highlightedOperator: null,
+}
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case 'input': {
+      if (state.overwrite) {
+        return {
+          ...state,
+          display: action.digit,
+          overwrite: false,
+          highlightedOperator: null,
+        }
+      }
+      if (state.display === '0' && action.digit === '0') return state
+      return { ...state, display: state.display + action.digit }
+    }
+
+    case 'decimal': {
+      if (state.display.includes('.')) return state
+      if (state.overwrite)
+        return { ...state, display: '0.', overwrite: false, highlightedOperator: null }
+      return { ...state, display: state.display + '.' }
+    }
+    case 'clear':
+      return INITIAL_STATE
+    case 'backspace': {
+      const newDisplay = state.display.length > 1 ? state.display.slice(0, -1) : '0'
+      return { ...state, display: newDisplay, overwrite: false, highlightedOperator: null }
+    }
+
+    case 'operator': {
+      const currentValue = parseFloat(state.display)
+
+      if (state.value !== null && state.operator && !state.overwrite) {
+        const result = math[state.operator](state.value, currentValue)
+        return {
+          display: String(result),
+          value: result,
+          operator: action.operator,
+          highlightedOperator: action.operator,
+          pendingValue: null,
+          overwrite: true,
+        }
+      }
+
+      return {
+        ...state,
+        value: currentValue,
+        operator: action.operator,
+        highlightedOperator: action.operator,
+        overwrite: true,
+      }
+    }
+
+    case 'evaluate': {
+      if (state.operator && state.value !== null) {
+        const operand =
+          state.overwrite && state.pendingValue !== null
+            ? state.pendingValue
+            : parseFloat(state.display)
+        const result = math[state.operator](state.value, operand)
+        return {
+          display: String(result),
+          value: result,
+          operator: null,
+          highlightedOperator: null,
+          pendingValue: operand,
+          overwrite: true,
+        }
+      }
+
+      return state
+    }
+    default:
+      return state
+  }
 }
 
 export const Calculator = ({ className, name, textValue = '0', onTextChange }: CalculatorProps) => {
-  const [displayedOperator, setDisplayedOperator] = useState<Operator | null>(null)
-
-  const lastOperation = useRef<{
-    value1: number | null
-    value2: number | null
-    pressedResult: boolean
-    operator: Operator | null
-  }>({
-    value1: null,
-    value2: null,
-    pressedResult: false,
-    operator: null,
-  })
-
-  const needClear = useRef(true)
-
-  const reset = useCallback(() => {
-    onTextChange('0')
-    setDisplayedOperator(null)
-    needClear.current = true
-    lastOperation.current = {
-      value1: null,
-      value2: null,
-      pressedResult: false,
-      operator: null,
-    }
-  }, [onTextChange])
-
-  const inputNumber = useCallback(
-    (value: string) => {
-      if (lastOperation.current.pressedResult) {
-        setDisplayedOperator(null)
-        needClear.current = true
-        lastOperation.current = {
-          value1: null,
-          value2: null,
-          pressedResult: false,
-          operator: null,
-        }
-      }
-
-      if (textValue === '0' && value === '0') {
-        return
-      }
-
-      const valueStr = needClear.current || textValue === '0' ? value : textValue + value
-
-      needClear.current = false
-      onTextChange(valueStr)
-    },
-    [textValue, onTextChange],
-  )
-
-  const backspace = useCallback(() => {
-    const valueStr = textValue.slice(0, -1) || '0'
-    onTextChange(valueStr)
-  }, [textValue, onTextChange])
-
-  const getResult = useCallback(() => {
-    let result = null
-    const value = parseFloat(textValue)
-
-    if (lastOperation.current.operator && lastOperation.current.value1 !== null) {
-      if (lastOperation.current.pressedResult && lastOperation.current.value2 !== null) {
-        result = math[lastOperation.current.operator](
-          lastOperation.current.value1,
-          lastOperation.current.value2,
-        )
-        lastOperation.current.value1 = result
-      } else {
-        result = math[lastOperation.current.operator](lastOperation.current.value1, value)
-        lastOperation.current.value1 = result
-        lastOperation.current.value2 = value
-      }
-
-      if (result !== null && !Number.isNaN(result)) {
-        onTextChange(String(result))
-      }
-    }
-
-    lastOperation.current.pressedResult = true
-    setDisplayedOperator(null)
-  }, [onTextChange, textValue])
-
-  const addOperation = useCallback(
-    (operator: Operator) => {
-      // return if operator is already pressed
-      if (lastOperation.current.operator !== null && operator === lastOperation.current.operator) {
-        return
-      }
-
-      // show minus sign if it's the first value selected and finally return
-      if (operator === '-' && textValue === '0') {
-        onTextChange('-')
-        needClear.current = false
-        return
-      }
-      // return if minus operator pressed and it's already printed on screen
-      else if (textValue === '-') {
-        return
-      }
-      // return if minus operator pressed and history already has equal sign
-      else if (
-        operator === '-' &&
-        lastOperation.current.operator === '-' &&
-        lastOperation.current.pressedResult
-      ) {
-        return
-      }
-
-      if (!lastOperation.current.operator) {
-        lastOperation.current = {
-          ...lastOperation.current,
-          value1: parseFloat(textValue),
-        }
-      } else {
-        if (lastOperation.current.operator && needClear.current) {
-          lastOperation.current.operator = operator
-          setDisplayedOperator(operator)
-          return
-        }
-
-        if (
-          lastOperation.current.pressedResult &&
-          lastOperation.current.value1 !== null &&
-          lastOperation.current.value2 !== null
-        ) {
-          lastOperation.current.pressedResult = false
-        } else {
-          const value = parseFloat(textValue)
-
-          if (lastOperation.current.value1 !== null) {
-            const result = math[lastOperation.current.operator](lastOperation.current.value1, value)
-            lastOperation.current.value1 = result
-            lastOperation.current.value2 = value
-
-            if (!Number.isNaN(result)) {
-              onTextChange(String(result))
-            }
-          }
-        }
-      }
-
-      lastOperation.current.operator = operator
-      setDisplayedOperator(operator)
-      needClear.current = true
-    },
-    [onTextChange, textValue],
-  )
-
-  const addPoint = useCallback(() => {
-    needClear.current = false
-
-    if (textValue.includes('.')) return
-
-    if (textValue === '-') {
-      onTextChange('-0.')
-      return
-    }
-
-    const value = textValue === '' ? '0.' : textValue + '.'
-    onTextChange(value)
-  }, [textValue, onTextChange])
-
-  const handleInput: React.MouseEventHandler<HTMLDivElement> = ({ target }) => {
-    const targetElement = target as HTMLDivElement
-
-    ;['number', 'operation', 'point'].forEach((key) => {
-      const buttonValue = targetElement.dataset[key]
-
-      if (buttonValue !== undefined) {
-        if (key === 'number') {
-          return inputNumber(buttonValue)
-        }
-
-        if (key === 'operation') {
-          switch (buttonValue) {
-            case 'reset': {
-              return reset()
-            }
-
-            case 'backspace': {
-              return backspace()
-            }
-
-            case 'result': {
-              return getResult()
-            }
-            case '+':
-            case '-':
-            case '*':
-            case '/': {
-              return addOperation(buttonValue)
-            }
-          }
-        }
-
-        if (key === 'point') {
-          return addPoint()
-        }
-      }
-    })
-  }
+  const [state, dispatch] = useReducer(reducer, { ...INITIAL_STATE, display: textValue })
 
   useEffect(() => {
-    const callback = ({ key }: { key: string }) => {
-      if (key.trim() && !Number.isNaN(Number(key.trim()))) {
-        return inputNumber(key)
-      }
+    onTextChange(state.display)
+  }, [state.display, onTextChange])
 
-      switch (key) {
-        case 'Escape': {
-          return reset()
-        }
+  useEffect(() => {
+    dispatch({ type: 'clear' })
+  }, [name])
 
-        case 'Backspace': {
-          return backspace()
-        }
-        case '=':
-        case 'Enter': {
-          return getResult()
-        }
+  const handleInput: React.MouseEventHandler<HTMLDivElement> = ({ target }) => {
+    const el = target as HTMLElement
+    const { number, operation, point } = el.dataset
 
-        case '.': {
-          return addPoint()
-        }
+    if (number) return dispatch({ type: 'input', digit: number })
+    if (point !== undefined) return dispatch({ type: 'decimal' })
+
+    if (operation) {
+      switch (operation) {
+        case 'reset':
+          return dispatch({ type: 'clear' })
+        case 'backspace':
+          return dispatch({ type: 'backspace' })
+        case 'result':
+          return dispatch({ type: 'evaluate' })
         case '+':
         case '-':
         case '*':
-        case '/': {
-          return addOperation(key)
-        }
+        case '/':
+          return dispatch({ type: 'operator', operator: operation })
       }
     }
-
-    document.addEventListener('keydown', callback)
-    return () => document.removeEventListener('keydown', callback)
-  }, [addOperation, addPoint, backspace, getResult, inputNumber, reset])
+  }
 
   useEffect(() => {
-    needClear.current = true
-  }, [name])
+    const onKeyDown = (e: KeyboardEvent) => {
+      const key = e.key
+      if (/\d/.test(key)) dispatch({ type: 'input', digit: key })
+      else if (key === '.') dispatch({ type: 'decimal' })
+      else if (key === 'Enter' || key === '=') dispatch({ type: 'evaluate' })
+      else if (['+', '-', '*', '/'].includes(key))
+        dispatch({ type: 'operator', operator: key as Operator })
+      else if (key === 'Backspace') dispatch({ type: 'backspace' })
+      else if (key === 'Escape') dispatch({ type: 'clear' })
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [])
 
   return (
     <div
@@ -278,13 +186,13 @@ export const Calculator = ({ className, name, textValue = '0', onTextChange }: C
       </ButtonSpring>
       <ButtonSpring
         data-operation="/"
-        className={clsx(classes.accent, displayedOperator === '/' && classes.highlight)}
+        className={clsx(classes.accent, state.highlightedOperator === '/' && classes.highlight)}
       >
         ÷
       </ButtonSpring>
       <ButtonSpring
         data-operation="*"
-        className={clsx(classes.accent, displayedOperator === '*' && classes.highlight)}
+        className={clsx(classes.accent, state.highlightedOperator === '*' && classes.highlight)}
       >
         ×
       </ButtonSpring>
@@ -299,7 +207,7 @@ export const Calculator = ({ className, name, textValue = '0', onTextChange }: C
       <ButtonSpring data-number="9">9</ButtonSpring>
       <ButtonSpring
         data-operation="-"
-        className={clsx(classes.accent, displayedOperator === '-' && classes.highlight)}
+        className={clsx(classes.accent, state.highlightedOperator === '-' && classes.highlight)}
       >
         −
       </ButtonSpring>
@@ -308,7 +216,7 @@ export const Calculator = ({ className, name, textValue = '0', onTextChange }: C
       <ButtonSpring data-number="6">6</ButtonSpring>
       <ButtonSpring
         data-operation="+"
-        className={clsx(classes.accent, displayedOperator === '+' && classes.highlight)}
+        className={clsx(classes.accent, state.highlightedOperator === '+' && classes.highlight)}
       >
         +
       </ButtonSpring>

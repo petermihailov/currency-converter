@@ -5,9 +5,11 @@ import classes from './TextFit.module.css'
 
 interface TextFitProps {
   text?: string
+  'data-testid'?: string
 }
 
-export const TextFit = ({ text = '' }: TextFitProps) => {
+export const TextFit = (props: TextFitProps) => {
+  const text = props.text || ''
   const refSvg = useRef<SVGSVGElement | null>(null)
   const refSpan = useRef<HTMLSpanElement>(null)
 
@@ -20,7 +22,7 @@ export const TextFit = ({ text = '' }: TextFitProps) => {
   return (
     <>
       <svg ref={refSvg} className={clsx(classes.input)} viewBox="0 0 0 0">
-        <text x="0" y={12}>
+        <text data-testid={props['data-testid']} x="0" y={12}>
           {text}
         </text>
       </svg>

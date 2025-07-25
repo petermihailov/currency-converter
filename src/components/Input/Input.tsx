@@ -18,6 +18,7 @@ const animateOptions: KeyframeAnimationOptions = {
 }
 
 interface InputProps {
+  position: 'left' | 'right'
   active?: boolean
   reverse?: boolean
   value: string
@@ -29,7 +30,17 @@ interface InputProps {
 }
 
 export const Input = memo(
-  ({ active, code, codeOpposite, reverse, value = '', ratio, onClick, onChange }: InputProps) => {
+  ({
+    active,
+    code,
+    codeOpposite,
+    reverse,
+    value = '',
+    ratio,
+    onClick,
+    onChange,
+    position,
+  }: InputProps) => {
     const refContainer = useRef<HTMLDivElement>(null)
     const refCurrencyPrev = useRef<HTMLDivElement>(null)
     const refCurrencyCurr = useRef<HTMLDivElement>(null)
@@ -113,7 +124,10 @@ export const Input = memo(
           />
         </div>
         <div className={clsx(classes.value, active && classes.accent)}>
-          <TextFit text={active ? formatNumberInputActive(value) : formatNumberInput(value)} />
+          <TextFit
+            data-testid={'value-' + position}
+            text={active ? formatNumberInputActive(value) : formatNumberInput(value)}
+          />
         </div>
       </div>
     )
