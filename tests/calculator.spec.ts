@@ -104,7 +104,7 @@ test.describe('Операции', () => {
     await calc.checkResult('left', '0.6666666666666666')
   })
 
-  test.only('Сложение трех чисел', async ({ calc }) => {
+  test('Сложение трех чисел', async ({ calc }) => {
     await calc.clickNumber(2)
     await calc.clickOperation('+')
     await calc.clickNumber(3)
@@ -145,15 +145,23 @@ test.describe('Операции', () => {
 
   test('Деление трех чисел', async ({ calc }) => {
     await calc.clickNumber(2)
-    await calc.clickOperation('+')
+    await calc.clickOperation('/')
+    await calc.clickNumber(3)
+    await calc.clickOperation('/')
     await calc.clickNumber(3)
     await calc.clickOperation('result')
-    await calc.checkResult('left', '5')
+    await calc.checkResult('left', '0.2222222222222222')
   })
 
   // test('Последовательные операции без =', async ({ calc }) => {
   //   await page.goto('http://localhost:5173/')
   // })
+})
+
+test('Ввод отрицательного числа', async ({ calc }) => {
+  await calc.clickOperation('-')
+  await calc.clickNumber(2)
+  await calc.checkResult('left', '-2')
 })
 
 // test.describe('Повтор операции', () => {

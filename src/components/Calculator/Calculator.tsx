@@ -80,6 +80,15 @@ function reducer(state: State, action: Action): State {
     case 'operator': {
       const currentValue = parseFloat(state.display)
 
+      if (action.operator === '-' && state.display === '0' && state.overwrite) {
+        return {
+          ...state,
+          display: '-',
+          overwrite: false,
+          highlightedOperator: null,
+        }
+      }
+
       if (state.value !== null && state.operator && !state.overwrite) {
         const result = math[state.operator](state.value, currentValue)
         return {

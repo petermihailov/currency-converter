@@ -32,15 +32,30 @@ const ButtonSpring = forwardRef<HTMLButtonElement, ButtonBaseProps>(
           },
         })
 
-        const enter = () => physics.go(0.93)
-        const leave = () => physics.go(1)
+        const enter = () => {
+          console.log('enter')
+          physics.go(0.93)
+        }
 
-        ;['keydown', 'pointerdown'].forEach((type) => button.addEventListener(type, enter))
-        ;['keyup', 'pointerup'].forEach((type) => button.addEventListener(type, leave))
+        const leave = () => {
+          console.log('leave')
+          physics.go(1)
+        }
+
+        ;['mousedown', 'pointerdown', 'pointerenter'].forEach((type) =>
+          button.addEventListener(type, enter),
+        )
+        ;['mouseup', 'pointerup', 'pointerleave'].forEach((type) =>
+          button.addEventListener(type, leave),
+        )
 
         return () => {
-          ;['keydown', 'pointerdown'].forEach((type) => button.removeEventListener(type, enter))
-          ;['keyup', 'pointerup'].forEach((type) => button.removeEventListener(type, leave))
+          ;['mousedown', 'pointerdown', 'pointerenter'].forEach((type) =>
+            button.removeEventListener(type, enter),
+          )
+          ;['mouseup', 'pointerup', 'pointerleave'].forEach((type) =>
+            button.removeEventListener(type, leave),
+          )
         }
       }
     }, [spring])
