@@ -1,71 +1,5 @@
 import { test } from './fixtures'
 
-// TC-02: Повтор последней операции
-// Ввод: '2', '+', '3', '=', '='
-//
-// Ожидаемый результат: 8
-// (2 + 3 = 5, 5 + 3 = 8)
-//
-// TC-03: Последовательные операции без =
-//   Ввод: '2', '+', '3', '+', '4', '='
-//
-// Ожидаемый результат: 9
-// (2 + 3 = 5, 5 + 4 = 9)
-//
-// TC-04: Умножение с повтором
-// Ввод: '5', '*', '2', '=', '=', '='
-//
-// Ожидаемый результат: 40
-// (5 * 2 = 10, 10 * 2 = 20, 20 * 2 = 40)
-//
-// 🔁 Повтор операции
-// TC-05: Повтор без второй операции
-// Ввод: '6', '*', '='
-//
-// Ожидаемый результат: 36
-// (6 * 6 = 36 — повторяется ввод самого числа)
-//
-// 🧮 Сброс и очистка
-// TC-06: Очистка последнего ввода
-// Ввод: '1', '2', 'C', '3', '+', '4', '='
-//
-// Ожидаемый результат: 7
-// (после 12, нажали C — стерли, набрали 3 + 4)
-//
-// TC-07: Полный сброс
-// Ввод: '9', '+', '1', 'AC', '7', '+', '1', '='
-//
-// Ожидаемый результат: 8
-// (после сброса идёт новая операция)
-//
-// 🧮 Граничные случаи
-// TC-08: Деление на ноль
-// Ввод: '8', '/', '0', '='
-//
-// Ожидаемый результат: Ошибка или Infinity
-//
-// TC-09: Нажатие = без операций
-// Ввод: '5', '='
-//
-// Ожидаемый результат: 5
-//
-// TC-10: Множественные =
-//   Ввод: '1', '+', '2', '=', '=', '=', '='
-//
-// Ожидаемый результат: 9
-// (1+2=3, +2=5, +2=7, +2=9)
-//
-// 🧹 Дополнительные тесты
-// TC-11: Ввод с десятичными
-// Ввод: '1', '.', '5', '+', '2', '.', '3', '='
-//
-// Ожидаемый результат: 3.8
-//
-// TC-12: Отрицательные числа (если поддерживаются)
-// Ввод: '-', '3', '+', '5', '='
-//
-// Ожидаемый результат: 2
-
 test.beforeEach(async ({ page, calc }) => {
   await page.goto('http://localhost:5173/')
   await calc.clickLeft()
@@ -76,7 +10,7 @@ test.describe('Операции', () => {
     await calc.clickNumber(2)
     await calc.clickOperation('+')
     await calc.clickNumber(3)
-    await calc.clickOperation('result')
+    await calc.clickResult()
     await calc.checkResult('left', '5')
   })
 
@@ -84,7 +18,7 @@ test.describe('Операции', () => {
     await calc.clickNumber(2)
     await calc.clickOperation('-')
     await calc.clickNumber(3)
-    await calc.clickOperation('result')
+    await calc.clickResult()
     await calc.checkResult('left', '-1')
   })
 
@@ -92,7 +26,7 @@ test.describe('Операции', () => {
     await calc.clickNumber(2)
     await calc.clickOperation('*')
     await calc.clickNumber(3)
-    await calc.clickOperation('result')
+    await calc.clickResult()
     await calc.checkResult('left', '6')
   })
 
@@ -100,7 +34,7 @@ test.describe('Операции', () => {
     await calc.clickNumber(2)
     await calc.clickOperation('/')
     await calc.clickNumber(3)
-    await calc.clickOperation('result')
+    await calc.clickResult()
     await calc.checkResult('left', '0.6666666666666666')
   })
 
@@ -110,7 +44,7 @@ test.describe('Операции', () => {
     await calc.clickNumber(3)
     await calc.clickOperation('+')
     await calc.clickNumber(5)
-    await calc.clickOperation('result')
+    await calc.clickResult()
     await calc.checkResult('left', '10')
   })
 
@@ -120,7 +54,7 @@ test.describe('Операции', () => {
     await calc.clickNumber(3)
     await calc.clickOperation('-')
     await calc.clickNumber(5)
-    await calc.clickOperation('result')
+    await calc.clickResult()
     await calc.checkResult('left', '-6')
   })
 
@@ -131,7 +65,7 @@ test.describe('Операции', () => {
     await calc.clickNumber(3)
     await calc.clickOperation('-')
     await calc.clickNumber(5)
-    await calc.clickOperation('result')
+    await calc.clickResult()
     await calc.checkResult('left', '-10')
   })
 
@@ -139,7 +73,7 @@ test.describe('Операции', () => {
     await calc.clickNumber(2)
     await calc.clickOperation('+')
     await calc.clickNumber(3)
-    await calc.clickOperation('result')
+    await calc.clickResult()
     await calc.checkResult('left', '5')
   })
 
@@ -149,51 +83,84 @@ test.describe('Операции', () => {
     await calc.clickNumber(3)
     await calc.clickOperation('/')
     await calc.clickNumber(3)
-    await calc.clickOperation('result')
+    await calc.clickResult()
     await calc.checkResult('left', '0.2222222222222222')
   })
 
-  // test('Последовательные операции без =', async ({ calc }) => {
-  //   await page.goto('http://localhost:5173/')
-  // })
+  test('Повторение операции', async ({ calc }) => {
+    await calc.clickNumber(2)
+    await calc.clickOperation('*')
+    await calc.clickNumber(2)
+    await calc.checkResult('left', '2')
+    await calc.clickResult()
+    await calc.checkResult('left', '4')
+    await calc.clickResult()
+    await calc.checkResult('left', '8')
+  })
+
+  test('Деление на ноль', async ({ calc }) => {
+    await calc.clickNumber(2)
+    await calc.clickOperation('/')
+    await calc.clickNumber(0)
+    await calc.clickResult()
+    await calc.checkResult('left', '∞')
+  })
 })
 
-test('Ввод отрицательного числа', async ({ calc }) => {
-  await calc.clickOperation('-')
-  await calc.clickNumber(2)
-  await calc.checkResult('left', '-2')
+test.describe('Сброс и очистка', () => {
+  test('Очистка последнего ввода', async ({ calc }) => {
+    await calc.clickNumber(2)
+    await calc.clickNumber(2)
+    await calc.checkResult('left', '22')
+    await calc.clickBackspace()
+    await calc.checkResult('left', '2')
+  })
+
+  test('Полный сброс', async ({ calc }) => {
+    await calc.clickNumber(2)
+    await calc.clickNumber(2)
+    await calc.checkResult('left', '22')
+    await calc.clickReset()
+    await calc.checkResult('left', '0')
+  })
 })
 
-// test.describe('Повтор операции', () => {
-//   test('Умножение с повтором', async ({ calc }) => {
-//     await page.goto('http://localhost:5173/')
-//   })
-//
-// test('Повтор последней операции', async ({ calc }) => {
-//   await page.goto('http://localhost:5173/')
-// })
-//
-//   test('Повтор без второй операции', async ({ calc }) => {
-//     await page.goto('http://localhost:5173/')
-//   })
-// })
-//
-// test.describe('Сброс и очистка', () => {
-//   test('Очистка последнего ввода', async ({ calc }) => {
-//     await page.goto('http://localhost:5173/')
-//   })
-//
-//   test('Полный сброс', async ({ calc }) => {
-//     await page.goto('http://localhost:5173/')
-//   })
-// })
-//
-// test.describe('Граничные случаи', () => {
-//   test('Деление на ноль', async ({ calc }) => {
-//     await page.goto('http://localhost:5173/')
-//   })
-//
-//   test('Нажатие = без операций', async ({ calc }) => {
-//     await page.goto('http://localhost:5173/')
-//   })
-// })
+test.describe('Граничные случаи', () => {
+  test('0 стоит по дефолту', async ({ calc }) => {
+    await calc.checkResult('left', '0')
+  })
+
+  test('Повторные нажатия на 0 не приводят к задваиванию', async ({ calc }) => {
+    await calc.checkResult('left', '0')
+    await calc.clickNumber(0)
+    await calc.checkResult('left', '0')
+  })
+
+  test('Первый операнд 0', async ({ calc }) => {
+    await calc.clickOperation('+')
+    await calc.clickNumber(1)
+    await calc.clickResult()
+    await calc.checkResult('left', '1')
+  })
+
+  test('Ввод отрицательного числа', async ({ calc }) => {
+    await calc.clickOperation('-')
+    await calc.clickNumber(2)
+    await calc.checkResult('left', '-2')
+  })
+
+  test('Ввод числа начиная с точки', async ({ calc }) => {
+    await calc.clickPoint()
+    await calc.checkResult('left', '0.')
+    await calc.clickNumber(2)
+    await calc.checkResult('left', '0.2')
+  })
+
+  test('Клик на = игнорируется до ввода двух чисел', async ({ calc }) => {
+    await calc.clickResult()
+    await calc.checkResult('left', '0')
+    await calc.clickNumber(2)
+    await calc.clickResult()
+    await calc.checkResult('left', '2')
+  })
+})

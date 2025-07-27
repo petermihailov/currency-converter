@@ -16,7 +16,7 @@
   display: grid;
   place-items: center;
   block-size: 2.5em;
-  background-color: #fff1;
+  background-color: #fff2;
   border: 1px solid #ffffff04;
   transition: background-color 100ms;
 }

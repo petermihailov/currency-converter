@@ -70,8 +70,10 @@ function reducer(state: State, action: Action): State {
         return { ...state, display: '0.', overwrite: false, highlightedOperator: null }
       return { ...state, display: state.display + '.' }
     }
+
     case 'clear':
       return INITIAL_STATE
+
     case 'backspace': {
       const newDisplay = state.display.length > 1 ? state.display.slice(0, -1) : '0'
       return { ...state, display: newDisplay, overwrite: false, highlightedOperator: null }
@@ -106,22 +108,28 @@ function reducer(state: State, action: Action): State {
         value: currentValue,
         operator: action.operator,
         highlightedOperator: action.operator,
+        pendingValue: null,
         overwrite: true,
       }
     }
 
     case 'evaluate': {
-      if (state.operator && state.value !== null) {
+      if (state.value !== null) {
+        const operatorToUse = state.operator ?? state.highlightedOperator
         const operand =
           state.overwrite && state.pendingValue !== null
             ? state.pendingValue
             : parseFloat(state.display)
-        const result = math[state.operator](state.value, operand)
+
+        if (!operatorToUse) return state
+
+        const result = math[operatorToUse](state.value, operand)
+
         return {
           display: String(result),
           value: result,
           operator: null,
-          highlightedOperator: null,
+          highlightedOperator: operatorToUse,
           pendingValue: operand,
           overwrite: true,
         }
@@ -129,6 +137,7 @@ function reducer(state: State, action: Action): State {
 
       return state
     }
+
     default:
       return state
   }
@@ -136,6 +145,9 @@ function reducer(state: State, action: Action): State {
 
 export const Calculator = ({ className, name, textValue = '0', onTextChange }: CalculatorProps) => {
   const [state, dispatch] = useReducer(reducer, { ...INITIAL_STATE, display: textValue })
+
+  // Для имитации клика при вводе с клавиатуры
+  const [pressedKey, setPressedKey] = React.useState<string | null>(null)
 
   useEffect(() => {
     onTextChange(state.display)
@@ -172,14 +184,22 @@ export const Calculator = ({ className, name, textValue = '0', onTextChange }: C
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       const key = e.key
-      if (/\d/.test(key)) dispatch({ type: 'input', digit: key })
-      else if (key === '.') dispatch({ type: 'decimal' })
-      else if (key === 'Enter' || key === '=') dispatch({ type: 'evaluate' })
+
+      const press = (keyId: string, action: Action) => {
+        dispatch(action)
+        setPressedKey(keyId)
+        setTimeout(() => setPressedKey(null), 200)
+      }
+
+      if (/\d/.test(key)) press(key, { type: 'input', digit: key })
+      else if (key === '.') press('.', { type: 'decimal' })
+      else if (key === 'Enter' || key === '=') press('result', { type: 'evaluate' })
       else if (['+', '-', '*', '/'].includes(key))
-        dispatch({ type: 'operator', operator: key as Operator })
-      else if (key === 'Backspace') dispatch({ type: 'backspace' })
-      else if (key === 'Escape') dispatch({ type: 'clear' })
+        press(key, { type: 'operator', operator: key as Operator })
+      else if (key === 'Backspace') press('backspace', { type: 'backspace' })
+      else if (key === 'Escape') press('reset', { type: 'clear' })
     }
+
     document.addEventListener('keydown', onKeyDown)
     return () => document.removeEventListener('keydown', onKeyDown)
   }, [])
@@ -190,58 +210,91 @@ export const Calculator = ({ className, name, textValue = '0', onTextChange }: C
       onPointerDown={handleInput}
       data-testid="calculator"
     >
-      <ButtonSpring data-operation="reset" className={clsx(classes.accent, classes.roundTopLeft)}>
+      <ButtonSpring
+        data-operation="reset"
+        pressed={pressedKey === 'reset'}
+        className={clsx(classes.accent, classes.roundTopLeft)}
+      >
         C
       </ButtonSpring>
       <ButtonSpring
         data-operation="/"
+        pressed={pressedKey === '/'}
         className={clsx(classes.accent, state.highlightedOperator === '/' && classes.highlight)}
       >
         ÷
       </ButtonSpring>
       <ButtonSpring
         data-operation="*"
+        pressed={pressedKey === '*'}
         className={clsx(classes.accent, state.highlightedOperator === '*' && classes.highlight)}
       >
         ×
       </ButtonSpring>
       <ButtonSpring
         data-operation="backspace"
+        pressed={pressedKey === 'backspace'}
         className={clsx(classes.accent, classes.roundTopRight)}
       >
         <Icon name="icon.calculator.backspace" />
       </ButtonSpring>
-      <ButtonSpring data-number="7">7</ButtonSpring>
-      <ButtonSpring data-number="8">8</ButtonSpring>
-      <ButtonSpring data-number="9">9</ButtonSpring>
+      <ButtonSpring data-number="7" pressed={pressedKey === '7'}>
+        7
+      </ButtonSpring>
+      <ButtonSpring data-number="8" pressed={pressedKey === '8'}>
+        8
+      </ButtonSpring>
+      <ButtonSpring data-number="9" pressed={pressedKey === '9'}>
+        9
+      </ButtonSpring>
       <ButtonSpring
         data-operation="-"
         className={clsx(classes.accent, state.highlightedOperator === '-' && classes.highlight)}
       >
         −
       </ButtonSpring>
-      <ButtonSpring data-number="4">4</ButtonSpring>
-      <ButtonSpring data-number="5">5</ButtonSpring>
-      <ButtonSpring data-number="6">6</ButtonSpring>
+      <ButtonSpring data-number="4" pressed={pressedKey === '4'}>
+        4
+      </ButtonSpring>
+      <ButtonSpring data-number="5" pressed={pressedKey === '5'}>
+        5
+      </ButtonSpring>
+      <ButtonSpring data-number="6" pressed={pressedKey === '6'}>
+        6
+      </ButtonSpring>
       <ButtonSpring
         data-operation="+"
+        pressed={pressedKey === '+'}
         className={clsx(classes.accent, state.highlightedOperator === '+' && classes.highlight)}
       >
         +
       </ButtonSpring>
-      <ButtonSpring data-number="1">1</ButtonSpring>
-      <ButtonSpring data-number="2">2</ButtonSpring>
-      <ButtonSpring data-number="3">3</ButtonSpring>
+      <ButtonSpring data-number="1" pressed={pressedKey === '1'}>
+        1
+      </ButtonSpring>
+      <ButtonSpring data-number="2" pressed={pressedKey === '2'}>
+        2
+      </ButtonSpring>
+      <ButtonSpring data-number="3" pressed={pressedKey === '3'}>
+        3
+      </ButtonSpring>
       <ButtonSpring
         data-operation="result"
+        pressed={pressedKey === 'result'}
         className={clsx(classes.accent, classes.result, classes.roundBottomRight)}
       >
         =
       </ButtonSpring>
-      <ButtonSpring data-number="0" className={clsx(classes.zero, classes.roundBottomLeft)}>
+      <ButtonSpring
+        data-number="0"
+        pressed={pressedKey === '0'}
+        className={clsx(classes.zero, classes.roundBottomLeft)}
+      >
         <div style={{ gridColumn: 2 }}>0</div>
       </ButtonSpring>
-      <ButtonSpring data-point>.</ButtonSpring>
+      <ButtonSpring data-point pressed={pressedKey === '.'}>
+        .
+      </ButtonSpring>
     </div>
   )
 }

@@ -7,58 +7,62 @@ import { mergeRefs } from '../../utils/merge-refs.ts'
 import classes from './ButtonSpring.module.css'
 
 export interface ButtonBaseProps extends React.HTMLAttributes<HTMLButtonElement> {
-  spring?: boolean
-  disabled?: boolean | undefined
+  pressed?: boolean | null
+  disabled?: boolean
 }
 
 const ButtonSpring = forwardRef<HTMLButtonElement, ButtonBaseProps>(
-  ({ className, spring = true, ...restProps }, ref) => {
+  ({ className, pressed, ...restProps }, ref) => {
     const refButton = useRef<HTMLButtonElement>(null)
 
+    const refPhysics = useRef(
+      new SpringPhysics({
+        from: 1,
+        options: {
+          namespace: '--scale',
+          tension: 450,
+          friction: 25,
+          startVelocity: 30,
+        },
+        onUpdate: ({ namespace, value }) => {
+          refButton.current?.style.setProperty(namespace, value.toString())
+        },
+      }),
+    )
+
     useEffect(() => {
-      if (spring) {
-        const button = refButton.current!
+      const button = refButton.current
+      if (!button) return
 
-        const physics = new SpringPhysics({
-          from: 1,
-          options: {
-            namespace: '--scale',
-            tension: 450,
-            friction: 25,
-            startVelocity: 30,
-          },
-          onUpdate: ({ namespace, value }) => {
-            button.style.setProperty(namespace, value.toString())
-          },
-        })
+      const physics = refPhysics.current
 
-        const enter = () => {
-          console.log('enter')
-          physics.go(0.93)
-        }
+      const enter = () => physics.go(0.93)
+      const leave = () => physics.go(1)
 
-        const leave = () => {
-          console.log('leave')
-          physics.go(1)
-        }
+      button.addEventListener('pointerdown', enter)
+      button.addEventListener('pointerup', leave)
+      button.addEventListener('pointerleave', leave)
 
-        ;['mousedown', 'pointerdown', 'pointerenter'].forEach((type) =>
-          button.addEventListener(type, enter),
-        )
-        ;['mouseup', 'pointerup', 'pointerleave'].forEach((type) =>
-          button.addEventListener(type, leave),
-        )
-
-        return () => {
-          ;['mousedown', 'pointerdown', 'pointerenter'].forEach((type) =>
-            button.removeEventListener(type, enter),
-          )
-          ;['mouseup', 'pointerup', 'pointerleave'].forEach((type) =>
-            button.removeEventListener(type, leave),
-          )
-        }
+      return () => {
+        button.removeEventListener('pointerdown', enter)
+        button.removeEventListener('pointerup', leave)
+        button.removeEventListener('pointerleave', leave)
       }
-    }, [spring])
+    }, [])
+
+    useEffect(() => {
+      const physics = refPhysics.current
+
+      if (pressed === undefined || pressed === null) {
+        return
+      }
+
+      if (pressed) {
+        physics.go(0.93)
+      } else {
+        physics.go(1)
+      }
+    }, [pressed])
 
     return (
       <button

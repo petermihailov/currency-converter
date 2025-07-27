@@ -20,7 +20,7 @@ export const formatNumberInput = (value: string) => {
   const options = {
     maximumFractionDigits: 2,
   }
-  return new Intl.NumberFormat('en', options).format(+value)
+  return new Intl.NumberFormat('ru', options).format(+value).replace(',', '.')
 }
 
 export const formatNumberInputActive = (value: string) => {
@@ -30,10 +30,10 @@ export const formatNumberInputActive = (value: string) => {
 
   if (value.toString().indexOf('.') !== -1) {
     const [integer, fraction] = value.toString().split('.')
-    return new Intl.NumberFormat('en', options).format(+integer) + `.${fraction}`
+    return new Intl.NumberFormat('ru', options).format(+integer) + `.${fraction}`
   }
 
-  return new Intl.NumberFormat('en', options).format(+value)
+  return new Intl.NumberFormat('ru', options).format(+value)
 }
 
 export const formatDate = (date: Date | string) => {
