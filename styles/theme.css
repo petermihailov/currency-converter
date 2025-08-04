@@ -15,7 +15,7 @@
   --font-size-8: 4.7684rem;
   --font-size-9: 5.9605rem;
 
-  --font-lineheight-0: 0;
+  --font-lineheight-0: 0.8;
   --font-lineheight-1: 1.4;
 
   /* radius */
@@ -27,6 +27,7 @@
   --radius-round: 50%;
 
   /* sizes scale: 1.618 */
+  --size-0000: 0.14rem;
   --size-000: 0.24rem;
   --size-00: 0.382rem;
   --size-0: 0.6181rem;
@@ -41,7 +42,7 @@
 
   /* colors */
   --color-accent: #1bf;
-  --color-accent-2: #f08;
+  --color-accent-2: #fb0;
   --color-text: #fffe;
   --color-layer-0: hsl(240deg 30% 0%);
   --color-layer-1: hsl(240deg 10% 30%);

@@ -1,13 +1,18 @@
-import { CURRENCY } from '../../constants.ts'
+import { CURRENCY, DEFAULT_CODES } from '../../constants.ts'
+import { Storage } from '../../lib/LocalStorage.ts'
 import type { CurrencyCode } from '../../types/currencies.ts'
 
-const currencyCodes = Object.keys(CURRENCY) as CurrencyCode[]
+const codesStorage = new Storage<{ picked: CurrencyCode[] }>('currency-codes', {
+  picked: DEFAULT_CODES,
+})
 
 export const getCurrencyCode = (
   prevOrNext: -1 | 1,
   currentCode: CurrencyCode,
   oppositeCode: CurrencyCode,
-) => {
+): CurrencyCode => {
+  const currencyCodes = codesStorage.get()?.picked || (Object.keys(CURRENCY) as CurrencyCode[])
+
   const codes = currencyCodes.filter((code) => code !== oppositeCode)
   const currentIdx = codes.findIndex((code) => code === currentCode)
 

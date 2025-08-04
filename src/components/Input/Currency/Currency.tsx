@@ -1,7 +1,6 @@
 import clsx from 'clsx'
 import { forwardRef, memo } from 'react'
 
-import { CURRENCY } from '../../../constants.ts'
 import type { CurrencyCode, DateRatio } from '../../../types/currencies.ts'
 import { formatCurrency } from '../../../utils/formatters.ts'
 import { getPariRatio } from '../../../utils/misc.ts'
@@ -29,10 +28,10 @@ export const Currency = memo(
         <div className={clsx(classes.currency)}>
           <img
             className={classes.flag}
-            src={`./flags/${CURRENCY[currencyCode].country}.webp`}
+            src={`./flags/${currencyCode.slice(0, 2)}.webp`}
             alt={currencyCode}
           />
-          {CURRENCY[currencyCode].currency}
+          {currencyCode}
         </div>
         <div className={classes.ratio}>
           <TextFit

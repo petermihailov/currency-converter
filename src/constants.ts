@@ -1,203 +1,160 @@
-export const CURRENCY = {
-  amd: { country: 'am', currency: 'amd', name: 'Armenian Dram', sign: '֏' },
-  rub: { country: 'ru', currency: 'rub', name: 'Russian Ruble', sign: '₽' },
-  usd: { country: 'us', currency: 'usd', name: 'US Dollar', sign: '$' },
-  eur: { country: 'eu', currency: 'eur', name: 'Euro', sign: '€' },
-  gel: { country: 'ge', currency: 'gel', name: 'Georgian Lari', sign: '₾' },
-  // aed: { country: "ae", currency: "aed", name: "Emirati Dirham", sign: "DH" },
-  // byn: { country: "by", currency: "byn", name: "Belarusian Ruble", sign: "Bn" },
-  // cad: { country: "ca", currency: "cad", name: "Canadian Dollar", sign: "C$" },
-  // czk: { country: "cz", currency: 'czk', name: 'Czech koruna', sign: "Kč" },
-  // gbp: { country: "gb", currency: "gbp", name: "British Pound", sign: "£" },
-  // kzt: { country: "kz", currency: "kzt", name: "Kazakhstani Tenge", sign: "₸" },
-  // rsd: { country: "rs", currency: 'rsd', name: 'Serbian dinar', sign: "RSD" },
-  // thb: { country: "th", currency: 'thb', name: 'Thai baht', sign: "฿" },
-  // try: { country: "tr", currency: 'try', name: 'Turkish lira', sign: "₺" },
-  // uah: { country: "ua", currency: "uah", name: "Ukrainian Hryvnia", sign: "₴" },
-  // vnd: { country: "vn", currency: 'vnd', name: 'Vietnamese Dong', sign: "₫" },
-  // btc: { country: "xx", currency: 'btc', name: 'Bitcoin', sign: "₿" },
-  // eth: { country: "xx", currency: 'eth', name: 'Ethereum', sign: "Ξ" },
-}
+import type { CurrencyCode } from './types/currencies.ts'
 
-/*
- * ISO-4217 currency codes
- *
-  code: 'aed', name: 'United Arab Emirates dirham',	 United Arab Emirates'
-  code: 'afn', name: 'Afghan afghani', Afghanistan'
-  code: 'all', name: 'Albanian lek	 Albania'
-  code: 'amd', name: 'Armenian dram	 Armenia'
-  code: 'ang', name: 'Netherlands Antillean guilder	 Curaçao (CW),  Sint Maarten (SX)'
-  code: 'aoa', name: 'Angolan kwanza	 Angola'
-  code: 'ars', name: 'Argentine peso	 Argentina'
-  code: 'aud', name: 'Australian dollar	 Australia,  Christmas Island (CX),  Cocos (Keeling) Islands (CC),  Heard Island and McDonald Islands (HM),  Kiribati (KI),  Nauru (NR),  Norfolk Island (NF),  Tuvalu (TV)'
-  code: 'awg', name: 'Aruban florin	 Aruba'
-  code: 'azn', name: 'Azerbaijani manat	 Azerbaijan'
-  code: 'bam', name: 'Bosnia and Herzegovina convertible mark	 Bosnia and Herzegovina'
-  code: 'bbd', name: 'Barbados dollar	 Barbados'
-  code: 'bdt', name: 'Bangladeshi taka	 Bangladesh'
-  code: 'bgn', name: 'Bulgarian lev	 Bulgaria'
-  code: 'bhd', name: 'Bahraini dinar	 Bahrain'
-  code: 'bif', name: 'Burundian franc	 Burundi'
-  code: 'bmd', name: 'Bermudian dollar	 Bermuda'
-  code: 'bnd', name: 'Brunei dollar	 Brunei'
-  code: 'bob', name: 'Boliviano	 Bolivia'
-  code: 'bov', name: 'Bolivian Mvdol (funds code)	 Bolivia'
-  code: 'brl', name: 'Brazilian real	 Brazil'
-  code: 'bsd', name: 'Bahamian dollar	 Bahamas'
-  code: 'btn', name: 'Bhutanese ngultrum	 Bhutan'
-  code: 'bwp', name: 'Botswana pula	 Botswana'
-  code: 'byn', name: 'Belarusian ruble	 Belarus'
-  code: 'bzd', name: 'Belize dollar	 Belize'
-  code: 'cad', name: 'Canadian dollar	 Canada'
-  code: 'cdf', name: 'Congolese franc	 Democratic Republic of the Congo'
-  code: 'che', name: 'WIR euro (complementary currency)	  Switzerland'
-  code: 'chf', name: 'Swiss franc	  Switzerland,  Liechtenstein (LI)'
-  code: 'chw', name: 'WIR franc (complementary currency)	  Switzerland'
-  code: 'clf', name: 'Unidad de Fomento (funds code)	 Chile'
-  code: 'clp', name: 'Chilean peso	 Chile'
-  code: 'cny', name: 'Renminbi[6]	 China'
-  code: 'cop', name: 'Colombian peso	 Colombia'
-  code: 'cou', name: '[7]	Unidad de Valor Real (UVR) (funds code)[7]	 Colombia'
-  code: 'crc', name: 'Costa Rican colon	 Costa Rica'
-  code: 'cup', name: 'Cuban peso	 Cuba'
-  code: 'cve', name: 'Cape Verdean escudo	 Cabo Verde'
-  code: 'czk', name: 'Czech koruna	 Czechia[8]'
-  code: 'djf', name: 'Djiboutian franc	 Djibouti'
-  code: 'dkk', name: 'Danish krone	 Denmark,  Faroe Islands (FO),  Greenland (GL)'
-  code: 'dop', name: 'Dominican peso	 Dominican Republic'
-  code: 'dzd', name: 'Algerian dinar	 Algeria'
-  code: 'egp', name: 'Egyptian pound	 Egypt'
-  code: 'ern', name: 'Eritrean nakfa	 Eritrea'
-  code: 'etb', name: 'Ethiopian birr	 Ethiopia'
-  code: 'eur', name: 'Euro	 Åland Islands (AX),  European Union (EU),  Andorra (AD)[c],  Austria (AT),  Belgium (BE),  Croatia (HR),  Cyprus (CY),  Estonia (EE),  Finland (FI),  France (FR),  French Guiana (GF),  French Southern and Antarctic Lands (TF),  Germany (DE),  Greece (GR),  Guadeloupe (GP),  Ireland (IE),  Italy (IT),  Kosovo (XK)[d],  Latvia (LV),  Lithuania (LT),  Luxembourg (LU),  Malta (MT),  Martinique (MQ),  Mayotte (YT),  Monaco (MC)[c],  Montenegro (ME)[d],  Netherlands (NL),  Portugal (PT),  Réunion (RE),  Saint Barthélemy (BL),  Saint Martin (MF),  Saint Pierre and Miquelon (PM),  San Marino (SM)[c],  Slovakia (SK),  Slovenia (SI),  Spain (ES),  Vatican City (VA)[c]'
-  code: 'fjd', name: 'Fiji dollar	 Fiji'
-  code: 'fkp', name: 'Falkland Islands pound	 Falkland Islands (pegged to GBP 1:1)'
-  code: 'gbp', name: 'Pound sterling	 United Kingdom,  Isle of Man (IM, see Manx pound),  Jersey (JE, see Jersey pound),  Guernsey (GG, see Guernsey pound),  Tristan da Cunha (SH-TA)'
-  code: 'gel', name: 'Georgian lari	 Georgia'
-  code: 'ghs', name: 'Ghanaian cedi	 Ghana'
-  code: 'gip', name: 'Gibraltar pound	 Gibraltar (pegged to GBP 1:1)'
-  code: 'gmd', name: 'Gambian dalasi	 Gambia'
-  code: 'gnf', name: 'Guinean franc	 Guinea'
-  code: 'gtq', name: 'Guatemalan quetzal	 Guatemala'
-  code: 'gyd', name: 'Guyanese dollar	 Guyana'
-  code: 'hkd', name: 'Hong Kong dollar	 Hong Kong'
-  code: 'hnl', name: 'Honduran lempira	 Honduras'
-  code: 'htg', name: 'Haitian gourde	 Haiti'
-  code: 'huf', name: 'Hungarian forint	 Hungary'
-  code: 'idr', name: 'Indonesian rupiah	 Indonesia'
-  code: 'ils', name: 'Israeli new shekel	 Israel'
-  code: 'inr', name: 'Indian rupee	 India,  Bhutan'
-  code: 'iqd', name: 'Iraqi dinar	 Iraq'
-  code: 'irr', name: 'Iranian rial	 Iran'
-  code: 'isk', name: 'Icelandic króna (plural: krónur)	 Iceland'
-  code: 'jmd', name: 'Jamaican dollar	 Jamaica'
-  code: 'jod', name: 'Jordanian dinar	 Jordan'
-  code: 'jpy', name: 'Japanese yen	 Japan'
-  code: 'kes', name: 'Kenyan shilling	 Kenya'
-  code: 'kgs', name: 'Kyrgyzstani som	 Kyrgyzstan'
-  code: 'khr', name: 'Cambodian riel	 Cambodia'
-  code: 'kmf', name: 'Comoro franc	 Comoros'
-  code: 'kpw', name: 'North Korean won	 North Korea'
-  code: 'krw', name: '[e]	South Korean won	 South Korea'
-  code: 'kwd', name: 'Kuwaiti dinar	 Kuwait'
-  code: 'kyd', name: 'Cayman Islands dollar	 Cayman Islands'
-  code: 'kzt', name: 'Kazakhstani tenge	 Kazakhstan'
-  code: 'lak', name: 'Lao kip	 Laos'
-  code: 'lbp', name: 'Lebanese pound	 Lebanon'
-  code: 'lkr', name: 'Sri Lankan rupee	 Sri Lanka'
-  code: 'lrd', name: 'Liberian dollar	 Liberia'
-  code: 'lsl', name: 'Lesotho loti	 Lesotho'
-  code: 'lyd', name: 'Libyan dinar	 Libya'
-  code: 'mad', name: 'Moroccan dirham	 Morocco,  Western Sahara'
-  code: 'mdl', name: 'Moldovan leu	 Moldova'
-  code: 'mga', name: '[f]	Malagasy ariary	 Madagascar'
-  code: 'mkd', name: 'Macedonian denar	 North Macedonia'
-  code: 'mmk', name: 'Myanmar kyat	 Myanmar'
-  code: 'mnt', name: 'Mongolian tögrög	 Mongolia'
-  code: 'mop', name: 'Macanese pataca	 Macau'
-  code: 'mru', name: '[f][10]	Mauritanian ouguiya	 Mauritania'
-  code: 'mur', name: 'Mauritian rupee	 Mauritius'
-  code: 'mvr', name: 'Maldivian rufiyaa	 Maldives'
-  code: 'mwk', name: 'Malawian kwacha	 Malawi'
-  code: 'mxn', name: 'Mexican peso	 Mexico'
-  code: 'mxv', name: 'Mexican Unidad de Inversion (UDI) (funds code)	 Mexico'
-  code: 'myr', name: 'Malaysian ringgit	 Malaysia'
-  code: 'mzn', name: 'Mozambican metical	 Mozambique'
-  code: 'nad', name: 'Namibian dollar	 Namibia (pegged to ZAR 1:1)'
-  code: 'ngn', name: 'Nigerian naira	 Nigeria'
-  code: 'nio', name: 'Nicaraguan córdoba	 Nicaragua'
-  code: 'nok', name: 'Norwegian krone	 Norway,  Svalbard and  Jan Mayen (SJ),  Bouvet Island (BV)'
-  code: 'npr', name: 'Nepalese rupee	   Nepal'
-  code: 'nzd', name: 'New Zealand dollar	 New Zealand,  Cook Islands (CK),  Niue (NU),  Pitcairn Islands (PN; see also Pitcairn Islands dollar),  Tokelau (TK)'
-  code: 'omr', name: 'Omani rial	 Oman'
-  code: 'pab', name: 'Panamanian balboa	 Panama'
-  code: 'pen', name: 'Peruvian sol	 Peru'
-  code: 'pgk', name: 'Papua New Guinean kina	 Papua New Guinea'
-  code: 'php', name: 'Philippine peso[11]	 Philippines'
-  code: 'pkr', name: 'Pakistani rupee	 Pakistan'
-  code: 'pln', name: 'Polish złoty	 Poland'
-  code: 'pyg', name: 'Paraguayan guaraní	 Paraguay'
-  code: 'qar', name: 'Qatari riyal	 Qatar'
-  code: 'ron', name: 'Romanian leu	 Romania'
-  code: 'rsd', name: 'Serbian dinar	 Serbia'
-  code: 'rub', name: 'Russian ruble	 Russia'
-  code: 'rwf', name: 'Rwandan franc	 Rwanda'
-  code: 'sar', name: 'Saudi riyal	 Saudi Arabia'
-  code: 'sbd', name: 'Solomon Islands dollar	 Solomon Islands'
-  code: 'scr', name: 'Seychelles rupee	 Seychelles'
-  code: 'sdg', name: 'Sudanese pound	 Sudan'
-  code: 'sek', name: 'Swedish krona (plural: kronor)	 Sweden'
-  code: 'sgd', name: 'Singapore dollar	 Singapore'
-  code: 'shp', name: 'Saint Helena pound	 Saint Helena (SH-SH),  Ascension Island (SH-AC)'
-  code: 'sle', name: 'Sierra Leonean leone (new leone)[12][13][14]	 Sierra Leone'
-  code: 'sll', name: 'Sierra Leonean leone (old leone)[12][13][14][15]	 Sierra Leone'
-  code: 'sos', name: 'Somalian shilling	 Somalia'
-  code: 'srd', name: 'Surinamese dollar	 Suriname'
-  code: 'ssp', name: 'South Sudanese pound	 South Sudan'
-  code: 'stn', name: '[16]	São Tomé and Príncipe dobra	 São Tomé and Príncipe'
-  code: 'svc', name: 'Salvadoran colón	 El Salvador'
-  code: 'syp', name: 'Syrian pound	 Syria'
-  code: 'szl', name: 'Swazi lilangeni	 Eswatini[11]'
-  code: 'thb', name: 'Thai baht	 Thailand'
-  code: 'tjs', name: 'Tajikistani somoni	 Tajikistan'
-  code: 'tmt', name: 'Turkmenistan manat	 Turkmenistan'
-  code: 'tnd', name: 'Tunisian dinar	 Tunisia'
-  code: 'top', name: 'Tongan paʻanga	 Tonga'
-  code: 'try', name: 'Turkish lira	 Turkey'
-  code: 'ttd', name: 'Trinidad and Tobago dollar	 Trinidad and Tobago'
-  code: 'twd', name: 'New Taiwan dollar	 Taiwan'
-  code: 'tzs', name: 'Tanzanian shilling	 Tanzania'
-  code: 'uah', name: 'Ukrainian hryvnia	 Ukraine'
-  code: 'ugx', name: 'Ugandan shilling	 Uganda'
-  code: 'usd', name: 'United States dollar	 United States,  American Samoa (AS),  British Indian Ocean Territory (IO) (also uses GBP),  British Virgin Islands (VG),  Caribbean Netherlands (BQ – Bonaire, Sint Eustatius and Saba),  Ecuador (EC),  El Salvador (SV),  Guam (GU),  Marshall Islands (MH),  Federated States of Micronesia (FM),  Northern Mariana Islands (MP),  Palau (PW),  Panama (PA) (as well as Panamanian Balboa),  Puerto Rico (PR),  Timor-Leste (TL),  Turks and Caicos Islands (TC),  U.S. Virgin Islands (VI),  United States Minor Outlying Islands (UM)'
-  code: 'usn', name: 'United States dollar (next day) (funds code)	 United States'
-  code: 'uyi', name: 'Uruguay Peso en Unidades Indexadas (URUIURUI) (funds code)	 Uruguay'
-  code: 'uyu', name: 'Uruguayan peso	 Uruguay'
-  code: 'uyw', name: 'Unidad previsional[17]	 Uruguay'
-  code: 'uzs', name: 'Uzbekistani sum	 Uzbekistan'
-  code: 'ved', name: 'Venezuelan digital bolívar[18]	 Venezuela'
-  code: 'ves', name: 'Venezuelan sovereign bolívar[11]	 Venezuela'
-  code: 'vnd', name: 'Vietnamese đồng	 Vietnam'
-  code: 'vuv', name: 'Vanuatu vatu	 Vanuatu'
-  code: 'wst', name: 'Samoan tala	 Samoa'
-  code: 'xaf', name: 'CFA franc BEAC	 Cameroon (CM),  Central African Republic (CF),  Republic of the Congo (CG),  Chad (TD),  Equatorial Guinea (GQ),  Gabon (GA)'
-  code: 'xag', name: 'Silver (one troy ounce)'
-  code: 'xau', name: 'Gold (one troy ounce)'
-  code: 'xba', name: 'European Composite Unit (EURCO) (bond market unit)'
-  code: 'xbb', name: 'European Monetary Unit (E.M.U.-6) (bond market unit)'
-  code: 'xbc', name: 'European Unit of Account 9 (E.U.A.-9) (bond market unit)'
-  code: 'xbd', name: 'European Unit of Account 17 (E.U.A.-17) (bond market unit)'
-  code: 'xcd', name: 'East Caribbean dollar	 Anguilla (AI),  Antigua and Barbuda (AG),  Dominica (DM),  Grenada (GD),  Montserrat (MS),  Saint Kitts and Nevis (KN),  Saint Lucia (LC),  Saint Vincent and the Grenadines (VC)'
-  code: 'xdr', name: 'Special drawing rights	International Monetary Fund'
-  code: 'xof', name: 'CFA franc BCEAO	 Benin (BJ),  Burkina Faso (BF),  Côte d'Ivoire (CI),  Guinea-Bissau (GW),  Mali (ML),  Niger (NE),  Senegal (SN),  Togo (TG)''
-  code: 'xpd', name: 'Palladium (one troy ounce)'
-  code: 'xpf', name: 'CFP franc (franc Pacifique)	French territories of the Pacific Ocean:  French Polynesia (PF),  New Caledonia (NC),  Wallis and Futuna (WF)'
-  code: 'xpt', name: 'Platinum (one troy ounce)'
-  code: 'xsu', name: 'SUCRE	Unified System for Regional Compensation (SUCRE)[19]'
-  code: 'xts', name: 'Code reserved for testing'
-  code: 'xua', name: 'ADB Unit of Account	African Development Bank[20]'
-  code: 'yer', name: 'Yemeni rial	 Yemen'
-  code: 'zar', name: 'South African rand	 Eswatini,  Lesotho,  Namibia,  South Africa'
-  code: 'zmw', name: 'Zambian kwacha	 Zambia'
-  code: 'zwl', name: 'Zimbabwean dollar (fifth)[g]	 Zimbabwe'
-*/
+/** ISO-4217 currency codes */
+export const CURRENCY = {
+  amd: { code: 'amd', name: 'Armenian Dram', sign: '֏' },
+  rub: { code: 'rub', name: 'Russian Ruble', sign: '₽' },
+  usd: { code: 'usd', name: 'US Dollar', sign: '$' },
+  eur: { code: 'eur', name: 'Euro', sign: '€' },
+  gel: { code: 'gel', name: 'Georgian Lari', sign: '₾' },
+  aed: { code: 'aed', name: 'Arab Emirates dirham', sign: 'DH' },
+  byn: { code: 'byn', name: 'Belarusian Ruble', sign: 'Bn' },
+  cad: { code: 'cad', name: 'Canadian Dollar', sign: 'C$' },
+  czk: { code: 'czk', name: 'Czech koruna', sign: 'Kč' },
+  gbp: { code: 'gbp', name: 'British Pound', sign: '£' },
+  kzt: { code: 'kzt', name: 'Kazakhstani Tenge', sign: '₸' },
+  rsd: { code: 'rsd', name: 'Serbian dinar' },
+  thb: { code: 'thb', name: 'Thai baht', sign: '฿' },
+  try: { code: 'try', name: 'Turkish lira', sign: '₺' },
+  uah: { code: 'uah', name: 'Ukrainian Hryvnia', sign: '₴' },
+  vnd: { code: 'vnd', name: 'Vietnamese Dong', sign: '₫' },
+  afn: { code: 'afn', name: 'Afghan afghani' },
+  all: { code: 'all', name: 'Albanian lek' },
+  aoa: { code: 'aoa', name: 'Angolan kwanza' },
+  ars: { code: 'ars', name: 'Argentine peso' },
+  aud: { code: 'aud', name: 'Australian dollar' },
+  awg: { code: 'awg', name: 'Aruban florin' },
+  azn: { code: 'azn', name: 'Azerbaijani manat' },
+  bam: { code: 'bam', name: 'Bosnia and Herzegovina mark' },
+  bbd: { code: 'bbd', name: 'Barbados dollar' },
+  bdt: { code: 'bdt', name: 'Bangladeshi taka' },
+  bgn: { code: 'bgn', name: 'Bulgarian lev' },
+  bhd: { code: 'bhd', name: 'Bahraini dinar' },
+  bif: { code: 'bif', name: 'Burundian franc' },
+  bmd: { code: 'bmd', name: 'Bermudian dollar' },
+  bnd: { code: 'bnd', name: 'Brunei dollar' },
+  bob: { code: 'bob', name: 'Boliviano' },
+  brl: { code: 'brl', name: 'Brazilian real' },
+  bsd: { code: 'bsd', name: 'Bahamian dollar' },
+  btn: { code: 'btn', name: 'Bhutanese ngultrum	' },
+  bwp: { code: 'bwp', name: 'Botswana pula' },
+  bzd: { code: 'bzd', name: 'Belize dollar' },
+  cdf: { code: 'cdf', name: 'Congolese franc' },
+  chf: { code: 'chf', name: 'Swiss franc' },
+  clp: { code: 'clp', name: 'Chilean peso' },
+  cny: { code: 'cny', name: 'Renminbi' },
+  cop: { code: 'cop', name: 'Colombian peso' },
+  crc: { code: 'crc', name: 'Costa Rican colon' },
+  cup: { code: 'cup', name: 'Cuban peso' },
+  cve: { code: 'cve', name: 'Cape Verdean escudo' },
+  djf: { code: 'djf', name: 'Djiboutian franc' },
+  dkk: { code: 'dkk', name: 'Danish krone' },
+  dop: { code: 'dop', name: 'Dominican peso' },
+  dzd: { code: 'dzd', name: 'Algerian dinar' },
+  egp: { code: 'egp', name: 'Egyptian pound' },
+  ern: { code: 'ern', name: 'Eritrean nakfa' },
+  etb: { code: 'etb', name: 'Ethiopian birr' },
+  fjd: { code: 'fjd', name: 'Fiji dollar' },
+  fkp: { code: 'fkp', name: 'Falkland Islands pound' },
+  ghs: { code: 'ghs', name: 'Ghanaian cedi' },
+  gip: { code: 'gip', name: 'Gibraltar pound' },
+  gmd: { code: 'gmd', name: 'Gambian dalasi' },
+  gnf: { code: 'gnf', name: 'Guinean franc' },
+  gtq: { code: 'gtq', name: 'Guatemalan quetzal' },
+  gyd: { code: 'gyd', name: 'Guyanese dollar' },
+  hkd: { code: 'hkd', name: 'Hong Kong dollar' },
+  hnl: { code: 'hnl', name: 'Honduran lempira' },
+  htg: { code: 'htg', name: 'Haitian gourde' },
+  huf: { code: 'huf', name: 'Hungarian forint' },
+  idr: { code: 'idr', name: 'Indonesian rupiah' },
+  ils: { code: 'ils', name: 'Israeli new shekel' },
+  inr: { code: 'inr', name: 'Indian rupee' },
+  iqd: { code: 'iqd', name: 'Iraqi dinar' },
+  irr: { code: 'irr', name: 'Iranian rial' },
+  isk: { code: 'isk', name: 'Icelandic króna' },
+  jmd: { code: 'jmd', name: 'Jamaican dollar' },
+  jod: { code: 'jod', name: 'Jordanian dinar' },
+  jpy: { code: 'jpy', name: 'Japanese yen' },
+  kes: { code: 'kes', name: 'Kenyan shilling' },
+  kgs: { code: 'kgs', name: 'Kyrgyzstani som' },
+  khr: { code: 'khr', name: 'Cambodian riel' },
+  kmf: { code: 'kmf', name: 'Comoro franc' },
+  kpw: { code: 'kpw', name: 'North Korean won' },
+  krw: { code: 'krw', name: 'South Korean won' },
+  kwd: { code: 'kwd', name: 'Kuwaiti dinar' },
+  kyd: { code: 'kyd', name: 'Cayman Islands dollar' },
+  lak: { code: 'lak', name: 'Lao kip' },
+  lbp: { code: 'lbp', name: 'Lebanese pound' },
+  lkr: { code: 'lkr', name: 'Sri Lankan rupee' },
+  lrd: { code: 'lrd', name: 'Liberian dollar' },
+  lsl: { code: 'lsl', name: 'Lesotho loti' },
+  lyd: { code: 'lyd', name: 'Libyan dinar' },
+  mad: { code: 'mad', name: 'Moroccan dirham' },
+  mdl: { code: 'mdl', name: 'Moldovan leu' },
+  mga: { code: 'mga', name: 'Malagasy ariary' },
+  mkd: { code: 'mkd', name: 'Macedonian denar' },
+  mmk: { code: 'mmk', name: 'Myanmar kyat' },
+  mnt: { code: 'mnt', name: 'Mongolian tögrög' },
+  mop: { code: 'mop', name: 'Macanese pataca' },
+  mru: { code: 'mru', name: 'Mauritanian ouguiya' },
+  mur: { code: 'mur', name: 'Mauritian rupee' },
+  mvr: { code: 'mvr', name: 'Maldivian rufiyaa' },
+  mwk: { code: 'mwk', name: 'Malawian kwacha' },
+  mxn: { code: 'mxn', name: 'Mexican peso' },
+  myr: { code: 'myr', name: 'Malaysian ringgit' },
+  mzn: { code: 'mzn', name: 'Mozambican metical' },
+  nad: { code: 'nad', name: 'Namibian dollar' },
+  ngn: { code: 'ngn', name: 'Nigerian naira' },
+  nio: { code: 'nio', name: 'Nicaraguan córdoba' },
+  nok: { code: 'nok', name: 'Norwegian krone' },
+  npr: { code: 'npr', name: 'Nepalese rupee' },
+  nzd: { code: 'nzd', name: 'New Zealand dollar' },
+  omr: { code: 'omr', name: 'Omani rial' },
+  pab: { code: 'pab', name: 'Panamanian balboa' },
+  pen: { code: 'pen', name: 'Peruvian sol' },
+  pgk: { code: 'pgk', name: 'Papua New Guinean kina' },
+  php: { code: 'php', name: 'Philippine peso' },
+  pkr: { code: 'pkr', name: 'Pakistani rupee' },
+  pln: { code: 'pln', name: 'Polish złoty' },
+  pyg: { code: 'pyg', name: 'Paraguayan guaraní' },
+  qar: { code: 'qar', name: 'Qatari riyal' },
+  ron: { code: 'ron', name: 'Romanian leu' },
+  rwf: { code: 'rwf', name: 'Rwandan franc' },
+  sar: { code: 'sar', name: 'Saudi riyal' },
+  sbd: { code: 'sbd', name: 'Solomon Islands dollar' },
+  scr: { code: 'scr', name: 'Seychelles rupee' },
+  sdg: { code: 'sdg', name: 'Sudanese pound' },
+  sek: { code: 'sek', name: 'Swedish krona' },
+  sgd: { code: 'sgd', name: 'Singapore dollar' },
+  shp: { code: 'shp', name: 'Saint Helena pound' },
+  sle: { code: 'sle', name: 'Sierra Leonean leone' },
+  sos: { code: 'sos', name: 'Somalian shilling' },
+  srd: { code: 'srd', name: 'Surinamese dollar' },
+  stn: { code: 'stn', name: 'São Tomé and Príncipe dobra' },
+  svc: { code: 'svc', name: 'Salvadoran colón' },
+  syp: { code: 'syp', name: 'Syrian pound' },
+  szl: { code: 'szl', name: 'Swazi lilangeni' },
+  tjs: { code: 'tjs', name: 'Tajikistani somoni' },
+  tmt: { code: 'tmt', name: 'Turkmenistan manat' },
+  tnd: { code: 'tnd', name: 'Tunisian dinar' },
+  top: { code: 'top', name: 'Tongan paʻanga' },
+  ttd: { code: 'ttd', name: 'Trinidad and Tobago dollar' },
+  twd: { code: 'twd', name: 'New Taiwan dollar' },
+  tzs: { code: 'tzs', name: 'Tanzanian shilling' },
+  ugx: { code: 'ugx', name: 'Ugandan shilling' },
+  uyu: { code: 'uyu', name: 'Uruguayan peso' },
+  uzs: { code: 'uzs', name: 'Uzbekistani sum' },
+  ved: { code: 'ved', name: 'Venezuelan digital bolívar' },
+  ves: { code: 'ves', name: 'Venezuelan sovereign bolívar' },
+  vuv: { code: 'vuv', name: 'Vanuatu vatu' },
+  wst: { code: 'wst', name: 'Samoan tala' },
+  yer: { code: 'yer', name: 'Yemeni rial' },
+  zar: { code: 'zar', name: 'South African rand' },
+  zmw: { code: 'zmw', name: 'Zambian kwacha' },
+  zwl: { code: 'zwl', name: 'Zimbabwean dollar' },
+
+  // btc: { code: 'btc', name: 'Bitcoin', sign: "₿" },
+  // eth: { code: 'eth', name: 'Ethereum', sign: "Ξ" },
+} as const
+
+export const DEFAULT_CODES = ['amd', 'rub', 'usd', 'eur', 'gel'] satisfies CurrencyCode[]

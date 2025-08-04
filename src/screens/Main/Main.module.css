@@ -2,11 +2,11 @@
   display: flex;
   flex-direction: column;
   justify-content: end;
-  gap: var(--size-1);
+  gap: var(--size-2);
   block-size: 100%;
   max-width: var(--size-8);
   margin-inline: auto;
-  padding-block-end: var(--size-2);
+  padding-block-end: 4rem;
 }
 
 .display {
@@ -44,20 +44,21 @@
   background-color: #fff3;
   z-index: 1;
   box-shadow: 0 0 var(--size-1) #0005;
-  font-size: var(--font-size-0);
   line-height: var(--size-2);
 }
 
 .info > *:first-child {
-  text-align: start;
+  justify-content: start;
 }
 
 .info > *:last-child {
-  text-align: end;
+  justify-content: end;
 }
 
 .currencyName {
+  display: flex;
   opacity: 0.5;
+  block-size: var(--font-size-0);
 }
 
 .currencyDate {
@@ -77,4 +78,11 @@
   box-shadow: 0 0 var(--size-1) #0005;
   padding: var(--size-0);
   border: 1px solid #fff1;
+}
+
+@media only screen and (orientation: landscape) {
+  .calculator,
+  .tabs {
+    display: none;
+  }
 }

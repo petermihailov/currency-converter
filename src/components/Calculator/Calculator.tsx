@@ -188,7 +188,7 @@ export const Calculator = ({ className, name, textValue = '0', onTextChange }: C
       const press = (keyId: string, action: Action) => {
         dispatch(action)
         setPressedKey(keyId)
-        setTimeout(() => setPressedKey(null), 200)
+        setTimeout(() => setPressedKey(null), 150)
       }
 
       if (/\d/.test(key)) press(key, { type: 'input', digit: key })
@@ -213,7 +213,7 @@ export const Calculator = ({ className, name, textValue = '0', onTextChange }: C
       <ButtonSpring
         data-operation="reset"
         pressed={pressedKey === 'reset'}
-        className={clsx(classes.accent, classes.roundTopLeft)}
+        className={clsx(classes.accent, classes.reset, classes.roundTopLeft)}
       >
         C
       </ButtonSpring>
