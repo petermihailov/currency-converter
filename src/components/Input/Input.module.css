@@ -1,5 +1,5 @@
 .input {
-  --block-size-content: calc(var(--size-2));
+  --block-size-content: var(--font-size-3);
   --block-padding: 0;
   --block-size: calc(var(--block-size-content) + var(--block-padding) * 2);
   --value-padding: var(--size-2);
@@ -18,7 +18,7 @@
 
 .value {
   display: flex;
-  block-size: var(--font-size-5);
+  block-size: var(--font-size-6);
   font-family: var(--font-sans-alt);
   padding-inline-end: var(--value-padding);
 }

@@ -2,7 +2,7 @@ import { Storage } from '../lib/LocalStorage'
 import type { CodesRatio, DateRatio } from '../types/currencies'
 import { toISODate } from '../utils/dates'
 
-const ratioStorage = new Storage<Record<string, CodesRatio>>('ratio')
+const ratioStorage = new Storage<Record<string, CodesRatio>>('ratio-cache', {})
 
 export const getUsdRatio = async (date: Date = new Date()): Promise<DateRatio | null> => {
   const cache = ratioStorage.get()

@@ -1,68 +1,75 @@
-export type JSONValue =
-  | string
-  | number
-  | boolean
-  | { [x: string]: JSONValue }
-  | { [x: number]: JSONValue }
-  | Array<JSONValue>
+// @ts-expect-error -- recursive
+export type StorageValue = string | number | boolean | Record<string, StorageValue> | StorageValue[]
 
-const prefix = '💱'
+const PREFIX = 'xc'
 
 export interface IStorage<T = unknown> {
   clear: () => boolean
-  get: () => T | null
+  get: () => T
   set: (value: T) => boolean
+  update: <V extends T extends object ? Partial<T> : never>(value: V) => boolean
+  watch: (cb: (value: T) => void) => () => void
 }
 
-export class Storage<T extends JSONValue> implements IStorage<T> {
+export class Storage<T extends StorageValue> implements IStorage<T> {
   private readonly key: string
+  private readonly defaultValue: T
 
-  constructor(key: string, defaults?: T) {
-    this.key = `${prefix}.${key}`
+  constructor(key: string, defaultValue: T) {
+    this.key = `${PREFIX}.${key}`
+    this.defaultValue = defaultValue
 
-    if (!this.get() && defaults) {
-      this.set(defaults)
+    // Если ещё нет значения — записываем дефолт
+    if (window.localStorage.getItem(this.key) === null) {
+      this.set(this.defaultValue)
     }
   }
 
-  public clear() {
-    try {
-      window.localStorage.removeItem(this.key)
+  clear(): boolean {
+    localStorage.removeItem(this.key)
+    return true
+  }
 
+  get(): T {
+    const json = window.localStorage.getItem(this.key)
+    if (!json) return this.defaultValue
+    try {
+      return JSON.parse(json) as T
+    } catch {
+      return this.defaultValue
+    }
+  }
+
+  set(value: T) {
+    try {
+      localStorage.setItem(this.key, JSON.stringify(value))
       return true
-    } catch (e) {
+    } catch {
       return false
     }
   }
 
-  public get() {
-    try {
-      const json = window.localStorage.getItem(this.key)
+  update<V extends Partial<T>>(value: V) {
+    const current = this.get()
+    const merged = { ...current, ...value }
+    return this.set(merged)
+  }
 
-      if (json) {
-        return JSON.parse(json) as T
+  watch(cb: (value: T) => void) {
+    const handler = (e: StorageEvent) => {
+      if (e.storageArea === localStorage && e.key === this.key) {
+        if (e.newValue) {
+          try {
+            const parsed = JSON.parse(e.newValue) as T
+            cb(parsed)
+          } catch {
+            // empty
+          }
+        }
       }
-    } catch (e) {
-      /* empty */
     }
+    window.addEventListener('storage', handler)
 
-    return null
-  }
-
-  public set(value: T) {
-    try {
-      const json = JSON.stringify(value)
-
-      window.localStorage.setItem(this.key, json)
-
-      return true
-    } catch (e) {
-      return false
-    }
-  }
-
-  public update(value: Partial<T>) {
-    const prev = (this.get() || {}) as { [x: string]: JSONValue }
-    return this.set({ ...prev, ...value } as T)
+    return () => window.removeEventListener('storage', handler)
   }
 }

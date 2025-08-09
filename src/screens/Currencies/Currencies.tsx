@@ -1,13 +1,11 @@
 import clsx from 'clsx'
-import { useEffect, useState } from 'react'
 import { Draggable, Droppable, DragDropContext } from 'react-beautiful-dnd'
 import type { DropResult } from 'react-beautiful-dnd'
 
 import { ButtonSpring } from '../../components/ButtonSpring'
 import { Icon } from '../../components/Icon'
-import { CURRENCY, DEFAULT_CODES } from '../../constants.ts'
-import { Storage } from '../../lib/LocalStorage.ts'
-import type { CurrencyCode } from '../../types/currencies'
+import { CURRENCY } from '../../constants.ts'
+import { useAppStorage } from '../../store/reducer.ts'
 import { arrayMove } from '../../utils/array-move.ts'
 
 import classes from './Currencies.module.css'
@@ -17,12 +15,8 @@ export interface CurrenciesProps {
   onBack: () => void
 }
 
-const codesStorage = new Storage<{ picked: CurrencyCode[] }>('currency-codes', {
-  picked: DEFAULT_CODES,
-})
-
 const Currencies = ({ className, onBack }: CurrenciesProps) => {
-  const [picked, setPicked] = useState<CurrencyCode[]>(codesStorage.get()?.picked || DEFAULT_CODES)
+  const [{ favorites }, dispatch] = useAppStorage()
 
   const handleDragEnd = (result: DropResult) => {
     const { source, destination } = result
@@ -36,14 +30,11 @@ const Currencies = ({ className, onBack }: CurrenciesProps) => {
     }
 
     // переставляем элементы в массиве
-    const newPicked = arrayMove(picked, source.index, destination.index)
-
-    setPicked(newPicked)
+    dispatch({
+      type: 'setFavorites',
+      payload: arrayMove(favorites, source.index, destination.index),
+    })
   }
-
-  useEffect(() => {
-    codesStorage.set({ picked })
-  }, [picked])
 
   return (
     <div className={clsx(className, classes.currencies)}>
@@ -57,7 +48,7 @@ const Currencies = ({ className, onBack }: CurrenciesProps) => {
                 className={clsx(classes.list, classes.pickedList)}
                 {...provided.droppableProps}
               >
-                {picked.map((code, idx) => (
+                {favorites.map((code, idx) => (
                   <Draggable key={code} draggableId={code} index={idx}>
                     {(provided) => (
                       <li
@@ -75,9 +66,7 @@ const Currencies = ({ className, onBack }: CurrenciesProps) => {
                         <button
                           className={classes.pickedIcon}
                           onClick={() => {
-                            setPicked((prev) => {
-                              return prev.filter((c) => c !== code)
-                            })
+                            dispatch({ type: 'removeFavorite', payload: code })
                           }}
                         >
                           <Icon name="icon.currencies.picked" />
@@ -95,7 +84,7 @@ const Currencies = ({ className, onBack }: CurrenciesProps) => {
             {Object.values(CURRENCY)
               .sort((a, b) => (a.name > b.name ? 1 : -1))
               .map((currency) => {
-                const isSelected = picked.includes(currency.code)
+                const isSelected = favorites.includes(currency.code)
 
                 return (
                   <li
@@ -105,10 +94,10 @@ const Currencies = ({ className, onBack }: CurrenciesProps) => {
                     <button
                       className={classes.currency}
                       onClick={() => {
-                        setPicked((prev) => {
-                          return isSelected
-                            ? prev.filter((c) => c !== currency.code)
-                            : [...prev, currency.code]
+                        // @ts-expect-error -- хз почему ошибка, вроде норм всё
+                        dispatch({
+                          type: isSelected ? 'removeFavorite' : 'addFavorite',
+                          payload: currency.code,
                         })
                       }}
                     >
@@ -128,7 +117,7 @@ const Currencies = ({ className, onBack }: CurrenciesProps) => {
           </ul>
         </div>
       </DragDropContext>
-      {picked.length >= 2 && (
+      {favorites.length >= 2 && (
         <ButtonSpring onClick={onBack} className={classes.backButton}>
           Back
         </ButtonSpring>

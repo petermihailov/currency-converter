@@ -1,5 +1,3 @@
-import type { CurrencyCode } from './types/currencies.ts'
-
 /** ISO-4217 currency codes */
 export const CURRENCY = {
   amd: { code: 'amd', name: 'Armenian Dram', sign: '֏' },
@@ -156,5 +154,3 @@ export const CURRENCY = {
   // btc: { code: 'btc', name: 'Bitcoin', sign: "₿" },
   // eth: { code: 'eth', name: 'Ethereum', sign: "Ξ" },
 } as const
-
-export const DEFAULT_CODES = ['amd', 'rub', 'usd', 'eur', 'gel'] satisfies CurrencyCode[]

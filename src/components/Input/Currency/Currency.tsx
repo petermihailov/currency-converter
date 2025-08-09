@@ -1,9 +1,8 @@
 import clsx from 'clsx'
 import { forwardRef, memo } from 'react'
 
-import type { CurrencyCode, DateRatio } from '../../../types/currencies.ts'
+import type { CurrencyCode } from '../../../types/currencies.ts'
 import { formatCurrency } from '../../../utils/formatters.ts'
-import { getPariRatio } from '../../../utils/misc.ts'
 import { TextFit } from '../../TextFit'
 
 import classes from './Currency.module.css'
@@ -13,7 +12,7 @@ interface CurrencyProps {
   currencyCode: CurrencyCode
   oppositeCode: CurrencyCode
   reverse?: boolean
-  ratio: DateRatio
+  ratio: number | null
 }
 
 export const Currency = memo(
@@ -34,12 +33,7 @@ export const Currency = memo(
           {currencyCode}
         </div>
         <div className={classes.ratio}>
-          <TextFit
-            text={formatCurrency(
-              oppositeCode,
-              getPariRatio(ratio.codes, currencyCode, oppositeCode),
-            )}
-          />
+          <TextFit text={formatCurrency(oppositeCode, ratio)} />
         </div>
       </div>
     ),

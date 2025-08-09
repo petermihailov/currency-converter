@@ -4,21 +4,20 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   justify-items: center;
-  font-size: var(--font-size-4);
-  line-height: var(--font-lineheight-1);
-  gap: 0.6rem;
+  font-size: var(--font-size-5);
+  line-height: var(--font-lineheight-0);
+  gap: 0.5rem;
   color: var(--color-text);
-  font-weight: 150;
+  font-weight: 200;
   font-family: var(--font-sans-alt);
   margin: 0 auto;
-  width: calc(100% + -7.3vw);
-  aspect-ratio: 0.81;
+  width: calc(100% + -8vw);
 }
 
 .numpad > :where(button) {
   display: grid;
   place-items: center;
-  block-size: 2.5em;
+  block-size: 5.225rem;
   background-color: #fff2;
   transition: background-color 150ms ease-out;
   border-radius: var(--radius-pill);

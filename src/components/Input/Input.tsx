@@ -4,7 +4,7 @@ import { memo, useLayoutEffect, useRef } from 'react'
 import { Currency } from './Currency'
 import { getCurrencyCode } from './Input.utils.ts'
 import { useSwipe } from '../../hooks/useSwipe'
-import type { CurrencyCode, DateRatio } from '../../types/currencies'
+import type { CurrencyCode } from '../../types/currencies'
 import { formatNumberInput, formatNumberInputActive } from '../../utils/formatters'
 import { TextFit } from '../TextFit'
 
@@ -22,7 +22,8 @@ interface InputProps {
   active?: boolean
   reverse?: boolean
   value: string
-  ratio: DateRatio
+  ratio: number | null
+  codes: CurrencyCode[]
   code: CurrencyCode
   codeOpposite: CurrencyCode
   onClick?: () => void
@@ -32,6 +33,7 @@ interface InputProps {
 export const Input = memo(
   ({
     active,
+    codes,
     code,
     codeOpposite,
     reverse,
@@ -50,7 +52,7 @@ export const Input = memo(
       const prev = refCurrencyPrev.current!
       const curr = refCurrencyCurr.current!
 
-      if (refPrevState.current.code === getCurrencyCode(1, code, codeOpposite)) {
+      if (refPrevState.current.code === getCurrencyCode(1, codes, code, codeOpposite)) {
         curr.animate(
           [
             { transform: `translateY(-100%)`, opacity: '0' },
@@ -70,7 +72,7 @@ export const Input = memo(
         )
       }
 
-      if (refPrevState.current.code === getCurrencyCode(-1, code, codeOpposite)) {
+      if (refPrevState.current.code === getCurrencyCode(-1, codes, code, codeOpposite)) {
         curr.animate(
           [
             { transform: `translateY(100%)`, opacity: '0' },
@@ -91,13 +93,13 @@ export const Input = memo(
       }
 
       refPrevState.current.code = code
-    }, [code, codeOpposite])
+    }, [codes, code, codeOpposite])
 
     // change currency code
 
     useSwipe(refContainer, {
-      onSwipeUp: () => onChange?.(getCurrencyCode(1, code, codeOpposite)),
-      onSwipeDown: () => onChange?.(getCurrencyCode(-1, code, codeOpposite)),
+      onSwipeUp: () => onChange?.(getCurrencyCode(1, codes, code, codeOpposite)),
+      onSwipeDown: () => onChange?.(getCurrencyCode(-1, codes, code, codeOpposite)),
     })
 
     return (

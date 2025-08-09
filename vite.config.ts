@@ -1,3 +1,5 @@
+/// <reference types="vitest/config" />
+
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
@@ -11,6 +13,12 @@ export default defineConfig({
       generateScopedName: '[local]--[hash:4]',
       localsConvention: 'camelCaseOnly',
     },
+  },
+
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    coverage: { reporter: ['text', 'lcov'] },
   },
 
   plugins: [

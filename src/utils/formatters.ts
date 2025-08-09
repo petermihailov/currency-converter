@@ -1,7 +1,7 @@
 import type { CurrencyCode } from '../types/currencies'
 
-export const formatCurrency = (code: CurrencyCode, value: number) => {
-  if (Number.isNaN(value)) {
+export const formatCurrency = (code: CurrencyCode, value: number | null) => {
+  if (value === null || Number.isNaN(value)) {
     return '--.--'
   }
 
@@ -36,7 +36,7 @@ export const formatNumberInputActive = (value: string) => {
   return new Intl.NumberFormat('ru', options).format(+value)
 }
 
-export const formatDate = (date: Date | string) => {
+export const formatDate = (date: Date | string | null) => {
   if (!date) return ''
 
   return new Date(date).toLocaleDateString('ru-RU')

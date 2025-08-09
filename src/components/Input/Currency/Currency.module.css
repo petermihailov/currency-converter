@@ -36,7 +36,7 @@
   flex: 1;
   justify-content: end;
   font-family: var(--font-sans-alt);
-  block-size: calc(0.5 * var(--block-size-content));
+  block-size: var(--font-size-1);
   opacity: 0.5;
   text-shadow: 0 0 2px #000;
 }

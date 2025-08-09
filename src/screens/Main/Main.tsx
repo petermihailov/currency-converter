@@ -1,77 +1,26 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
 
-import { getUsdRatio } from '../../api/getUsdRatio.ts'
+import { Calculator } from './Calculator'
+import { getUsdRatio } from '../../api/getUsdRatio'
 import { ButtonSpring } from '../../components/ButtonSpring'
-import { Calculator } from '../../components/Calculator'
 import { Input } from '../../components/Input'
-import { getCurrencyCode } from '../../components/Input/Input.utils.ts'
-import { Tabs } from '../../components/Tabs/Tabs.tsx'
+import { Tabs } from '../../components/Tabs/Tabs'
 import { TextFit } from '../../components/TextFit'
-import { CURRENCY, DEFAULT_CODES } from '../../constants.ts'
-import { Storage } from '../../lib/LocalStorage.ts'
-import type { CodesRatio, CurrencyCode, DateRatio } from '../../types/currencies.ts'
-import { formatDate } from '../../utils/formatters.ts'
-import { getPariRatio } from '../../utils/misc.ts'
+import { CURRENCY } from '../../constants'
+import { useAppStorage } from '../../store/reducer'
+import { toISODate } from '../../utils/dates.ts'
+import { formatDate } from '../../utils/formatters'
 
 import classes from './Main.module.css'
-
-const codesStorage = new Storage<{ picked: CurrencyCode[] }>('currency-codes', {
-  picked: DEFAULT_CODES,
-})
-
-const pairStorage = new Storage<{
-  right: CurrencyCode
-  left: CurrencyCode
-  active: 'left' | 'right'
-}>('pair', {
-  right: codesStorage.get()?.picked[0] || 'amd',
-  left: codesStorage.get()?.picked[1] || 'rub',
-  active: 'right',
-})
-
-const pairCache = pairStorage.get()
-
-const convert = (
-  textValue: string,
-  code: CurrencyCode,
-  oppositeCode: CurrencyCode,
-  ratio: DateRatio,
-): string => {
-  const value = parseFloat(textValue) * getPariRatio(ratio.codes, code, oppositeCode)
-
-  if (!Number.isNaN(value)) {
-    return String(Number(value.toFixed(2)))
-  }
-
-  return '0'
-}
-
-interface CurrencyType {
-  code: CurrencyCode
-  textValue: string
-}
 
 interface MainScreenProps {
   goCurrencies: () => void
 }
 
 export const MainScreen = ({ goCurrencies }: MainScreenProps) => {
-  const [currencyRight, setCurrencyRight] = useState<CurrencyType>({
-    code: pairCache!.right,
-    textValue: '0',
-  })
-
-  const [currencyLeft, setCurrencyLeft] = useState<CurrencyType>({
-    code: pairCache!.left,
-    textValue: '0',
-  })
-
-  const [ratio, setRatio] = useState<DateRatio>({
-    date: '',
-    codes: {} as CodesRatio,
-  })
-
-  const [activeInput, setActiveInput] = useState<'left' | 'right'>(pairCache!.active)
+  const [state, dispatch] = useAppStorage()
+  const [left, setLeft] = useState('0')
+  const [right, setRight] = useState('0')
 
   const refSwapButton = useRef<HTMLButtonElement>(null)
 
@@ -88,147 +37,143 @@ export const MainScreen = ({ goCurrencies }: MainScreenProps) => {
       },
     )
 
-    const [right, left] = [currencyLeft, currencyRight]
-    right.textValue = String(Number(Number(right.textValue).toFixed(2)))
-
-    setCurrencyRight(right)
-    setCurrencyLeft(left)
-  }, [currencyLeft, currencyRight])
-
-  const changeActiveInput = useCallback((active: 'left' | 'right') => {
-    if (active === 'left') {
-      setCurrencyLeft((prev) => ({
-        ...prev,
-        textValue: String(Number(Number(prev.textValue).toFixed(2))),
-      }))
-    } else {
-      setCurrencyRight((prev) => ({
-        ...prev,
-        textValue: String(Number(Number(prev.textValue).toFixed(2))),
-      }))
-    }
-
-    setActiveInput(active)
+    dispatch({ type: 'swap' })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const inputLeft = useCallback(
-    (textValue: string) => {
-      setCurrencyLeft((prev) => ({ ...prev, textValue }))
-      setCurrencyRight((prev) => ({
-        ...prev,
-        textValue: convert(textValue, currencyLeft.code, currencyRight.code, ratio),
-      }))
-    },
-    [currencyLeft.code, currencyRight.code, ratio],
-  )
+  // const changeActiveInput = useCallback((active: 'left' | 'right') => {
+  //   if (active === 'left') {
+  //     setLeft()
+  //   } else {
+  //     setRight()
+  //   }
+  //
+  //   // setActiveInput(active)
+  // }, [])
 
-  const inputRight = useCallback(
-    (textValue: string) => {
-      setCurrencyRight((prev) => ({ ...prev, textValue }))
-      setCurrencyLeft((prev) => ({
-        ...prev,
-        textValue: convert(textValue, currencyRight.code, currencyLeft.code, ratio),
-      }))
-    },
-    [currencyLeft.code, currencyRight.code, ratio],
-  )
+  // const inputLeft = useCallback(
+  //   (textValue: string) => {
+  //     setCurrencyLeft((prev) => ({ ...prev, textValue }))
+  //     setCurrencyRight((prev) => ({
+  //       ...prev,
+  //       textValue: convert(textValue, currencyLeft.code, currencyRight.code, ratio),
+  //     }))
+  //   },
+  //   [currencyLeft.code, currencyRight.code, ratio],
+  // )
+  //
+  // const inputRight = useCallback(
+  //   (textValue: string) => {
+  //     setCurrencyRight((prev) => ({ ...prev, textValue }))
+  //     setCurrencyLeft((prev) => ({
+  //       ...prev,
+  //       textValue: convert(textValue, currencyRight.code, currencyLeft.code, ratio),
+  //     }))
+  //   },
+  //   [currencyLeft.code, currencyRight.code, ratio],
+  // )
 
-  const onChangeLeft = useCallback(
-    (code: CurrencyCode) => {
-      setCurrencyLeft((prev) => ({ ...prev, code }))
+  // const onChangeLeft = useCallback(
+  //   (code: CurrencyCode) => {
+  //     setCurrencyLeft((prev) => ({ ...prev, code }))
+  //
+  //     if (activeInput === 'right') {
+  //       setCurrencyLeft((prev) => ({
+  //         ...prev,
+  //         textValue: convert(currencyRight.textValue, currencyRight.code, code, ratio),
+  //       }))
+  //     } else {
+  //       setCurrencyRight((prev) => ({
+  //         ...prev,
+  //         textValue: convert(currencyLeft.textValue, code, currencyRight.code, ratio),
+  //       }))
+  //     }
+  //   },
+  //   [activeInput, currencyLeft.textValue, currencyRight.code, currencyRight.textValue, ratio],
+  // )
+  //
+  // const onChangeRight = useCallback(
+  //   (code: CurrencyCode) => {
+  //     setCurrencyRight((prev) => ({ ...prev, code }))
+  //
+  //     if (activeInput === 'right') {
+  //       setCurrencyLeft((prev) => ({
+  //         ...prev,
+  //         textValue: convert(currencyRight.textValue, code, currencyLeft.code, ratio),
+  //       }))
+  //     } else {
+  //       setCurrencyRight((prev) => ({
+  //         ...prev,
+  //         textValue: convert(currencyLeft.textValue, currencyLeft.code, code, ratio),
+  //       }))
+  //     }
+  //   },
+  //   [activeInput, currencyLeft.code, currencyLeft.textValue, currencyRight.textValue, ratio],
+  // )
 
-      if (activeInput === 'right') {
-        setCurrencyLeft((prev) => ({
-          ...prev,
-          textValue: convert(currencyRight.textValue, currencyRight.code, code, ratio),
-        }))
-      } else {
-        setCurrencyRight((prev) => ({
-          ...prev,
-          textValue: convert(currencyLeft.textValue, code, currencyRight.code, ratio),
-        }))
-      }
-    },
-    [activeInput, currencyLeft.textValue, currencyRight.code, currencyRight.textValue, ratio],
-  )
-
-  const onChangeRight = useCallback(
-    (code: CurrencyCode) => {
-      setCurrencyRight((prev) => ({ ...prev, code }))
-
-      if (activeInput === 'right') {
-        setCurrencyLeft((prev) => ({
-          ...prev,
-          textValue: convert(currencyRight.textValue, code, currencyLeft.code, ratio),
-        }))
-      } else {
-        setCurrencyRight((prev) => ({
-          ...prev,
-          textValue: convert(currencyLeft.textValue, currencyLeft.code, code, ratio),
-        }))
-      }
-    },
-    [activeInput, currencyLeft.code, currencyLeft.textValue, currencyRight.textValue, ratio],
-  )
-
-  /* Get ratio */
   useEffect(() => {
+    // пробуем найти rates в кэше за сегодня
+    if (state.date === toISODate(new Date())) {
+      return
+    }
+
     getUsdRatio().then((data) => {
       if (data) {
-        setRatio(data)
+        dispatch({ type: 'setRates', payload: data })
       }
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  /* Storage sync */
-  useEffect(() => {
-    pairStorage.update({
-      left: currencyLeft.code,
-      right: currencyRight.code,
-      active: activeInput,
-    })
-  }, [currencyRight.code, currencyLeft.code, activeInput])
+  // /* Storage sync */
+  // useEffect(() => {
+  //   pairStorage.update({
+  //     left: currencyLeft.code,
+  //     right: currencyRight.code,
+  //     active: activeInput,
+  //   })
+  // }, [currencyRight.code, currencyLeft.code, activeInput])
 
-  /* Change codes keyboard */
-  useEffect(() => {
-    const code: CurrencyCode = activeInput === 'left' ? currencyLeft.code : currencyRight.code
-    const codeOpposite: CurrencyCode =
-      activeInput === 'left' ? currencyRight.code : currencyLeft.code
-
-    const onChange = activeInput === 'left' ? onChangeLeft : onChangeRight
-    const onChangeOpposite = activeInput === 'left' ? onChangeRight : onChangeLeft
-
-    const listener = (e: KeyboardEvent) => {
-      if (e.key === 'r') {
-        swap()
-      }
-
-      if (e.shiftKey) {
-        if (e.code === 'ArrowUp') {
-          onChangeOpposite(getCurrencyCode(1, codeOpposite, code))
-        }
-
-        if (e.code === 'ArrowDown') {
-          onChangeOpposite(getCurrencyCode(-1, codeOpposite, code))
-        }
-      } else {
-        if (e.code === 'ArrowUp') {
-          onChange(getCurrencyCode(1, code, codeOpposite))
-        }
-
-        if (e.code === 'ArrowDown') {
-          onChange(getCurrencyCode(-1, code, codeOpposite))
-        }
-      }
-    }
-
-    document.body.addEventListener('keydown', listener)
-
-    return () => {
-      document.body.removeEventListener('keydown', listener)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeInput, currencyLeft.code, currencyRight.code])
+  // /* Change codes keyboard */
+  // useEffect(() => {
+  //   const code: CurrencyCode = activeInput === 'left' ? currencyLeft.code : currencyRight.code
+  //   const codeOpposite: CurrencyCode =
+  //     activeInput === 'left' ? currencyRight.code : currencyLeft.code
+  //
+  //   const onChange = activeInput === 'left' ? onChangeLeft : onChangeRight
+  //   const onChangeOpposite = activeInput === 'left' ? onChangeRight : onChangeLeft
+  //
+  //   const listener = (e: KeyboardEvent) => {
+  //     if (e.key === 'r') {
+  //       swap()
+  //     }
+  //
+  //     if (e.shiftKey) {
+  //       if (e.code === 'ArrowUp') {
+  //         onChangeOpposite(getCurrencyCode(1, codeOpposite, code))
+  //       }
+  //
+  //       if (e.code === 'ArrowDown') {
+  //         onChangeOpposite(getCurrencyCode(-1, codeOpposite, code))
+  //       }
+  //     } else {
+  //       if (e.code === 'ArrowUp') {
+  //         onChange(getCurrencyCode(1, code, codeOpposite))
+  //       }
+  //
+  //       if (e.code === 'ArrowDown') {
+  //         onChange(getCurrencyCode(-1, code, codeOpposite))
+  //       }
+  //     }
+  //   }
+  //
+  //   document.body.addEventListener('keydown', listener)
+  //
+  //   return () => {
+  //     document.body.removeEventListener('keydown', listener)
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [activeInput, currencyLeft.code, currencyRight.code])
 
   return (
     <div className={classes.app}>
@@ -237,25 +182,27 @@ export const MainScreen = ({ goCurrencies }: MainScreenProps) => {
       <div className={classes.display}>
         <Input
           position="left"
-          active={activeInput === 'left'}
-          value={currencyLeft.textValue}
-          code={currencyLeft.code}
-          codeOpposite={currencyRight.code}
-          onClick={() => changeActiveInput('left')}
-          ratio={ratio}
-          onChange={onChangeLeft}
+          active={state.active === 'left'}
+          value={left}
+          code={state.leftCode}
+          codes={state.favorites}
+          codeOpposite={state.rightCode}
+          onClick={() => dispatch({ type: 'setActive', payload: 'left' })}
+          ratio={null}
+          onChange={(code) => dispatch({ type: 'setLeftCode', payload: code })}
         />
 
         <Input
           position="right"
           reverse
-          active={activeInput === 'right'}
-          value={currencyRight.textValue}
-          code={currencyRight.code}
-          codeOpposite={currencyLeft.code}
-          onClick={() => changeActiveInput('right')}
-          ratio={ratio}
-          onChange={onChangeRight}
+          active={state.active === 'right'}
+          value={right}
+          code={state.rightCode}
+          codes={state.favorites}
+          codeOpposite={state.leftCode}
+          onClick={() => dispatch({ type: 'setActive', payload: 'right' })}
+          ratio={null}
+          onChange={(code) => dispatch({ type: 'setRightCode', payload: code })}
         />
 
         <ButtonSpring ref={refSwapButton} className={classes.swapButton} onClick={swap}>
@@ -269,22 +216,20 @@ export const MainScreen = ({ goCurrencies }: MainScreenProps) => {
 
         <div className={classes.info}>
           <span className={classes.currencyName}>
-            <TextFit text={CURRENCY[currencyLeft.code].name} />
+            <TextFit text={CURRENCY[state.leftCode].name} />
           </span>
 
-          <span className={classes.currencyDate}>{formatDate(ratio.date)}</span>
+          <span className={classes.currencyDate}>{formatDate(state.date)}</span>
 
           <span className={classes.currencyName}>
-            <TextFit text={CURRENCY[currencyRight.code].name} />
+            <TextFit text={CURRENCY[state.rightCode].name} />
           </span>
         </div>
       </div>
 
       <Calculator
         className={classes.calculator}
-        name={activeInput + (activeInput === 'left' ? currencyLeft.code : currencyRight.code)}
-        textValue={activeInput === 'left' ? currencyLeft.textValue : currencyRight.textValue}
-        onTextChange={activeInput === 'left' ? inputLeft : inputRight}
+        onChange={state.active === 'right' ? setRight : setLeft}
       />
     </div>
   )
