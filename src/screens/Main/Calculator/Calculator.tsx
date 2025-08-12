@@ -1,5 +1,6 @@
 import clsx from 'clsx'
-import React, { useEffect } from 'react'
+import type DecimalJS from 'decimal.js'
+import React, { memo, useEffect, useRef } from 'react'
 
 import { useCalculatorState } from './store/useCalculatorState.ts'
 import type { Decimal } from './types.ts'
@@ -10,15 +11,31 @@ import classes from './Calculator.module.css'
 
 interface CalculatorProps {
   className?: string
-  onChange: (value: string) => void
+  onChange: (val: { value: DecimalJS; display: string }) => void
+  // передаем наверх dispatch, чтобы мы могли установить значение калькулятора при смене активного инпута
+  passDispatch: (dispatch: ReturnType<typeof useCalculatorState>[1]) => void
 }
 
-export const Calculator = ({ className, onChange }: CalculatorProps) => {
+export const Calculator = memo(({ className, passDispatch, onChange }: CalculatorProps) => {
   const [state, dispatch] = useCalculatorState()
 
+  // держим всегда актуальную ссылку на onChange
+  const onChangeRef = useRef(onChange)
   useEffect(() => {
-    onChange(state.currentValue)
-  }, [onChange, state.currentValue])
+    onChangeRef.current = onChange
+  }, [onChange])
+
+  useEffect(() => {
+    passDispatch(dispatch)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [passDispatch])
+
+  useEffect(() => {
+    onChangeRef.current({
+      value: state.currentValue,
+      display: state.currentDisplay,
+    })
+  }, [state.currentDisplay, state.currentValue])
 
   const handleInput: React.MouseEventHandler<HTMLDivElement> = ({ target }) => {
     const el = target as HTMLElement
@@ -110,4 +127,4 @@ export const Calculator = ({ className, onChange }: CalculatorProps) => {
       <ButtonSpring data-decimal=".">.</ButtonSpring>
     </div>
   )
-}
+})

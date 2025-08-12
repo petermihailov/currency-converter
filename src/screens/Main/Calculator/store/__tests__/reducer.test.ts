@@ -1,3 +1,4 @@
+import DecimalJS from 'decimal.js'
 import { describe, expect, it } from 'vitest'
 
 import { reducer, INITIAL_STATE } from '../reducer.ts'
@@ -8,14 +9,16 @@ describe('Calculator reducer', () => {
       const state1 = reducer(INITIAL_STATE, { type: 'decimal', payload: '1' })
       expect(state1).toEqual({
         ...INITIAL_STATE,
-        currentValue: '1',
+        currentValue: new DecimalJS('1'),
+        currentDisplay: '1',
         overwrite: false,
       })
 
       const state2 = reducer(state1, { type: 'decimal', payload: '0' })
       expect(state2).toEqual({
         ...INITIAL_STATE,
-        currentValue: '10',
+        currentValue: new DecimalJS('10'),
+        currentDisplay: '10',
         overwrite: false,
       })
     })
@@ -24,21 +27,24 @@ describe('Calculator reducer', () => {
       const state1 = reducer(INITIAL_STATE, { type: 'decimal', payload: '1' })
       expect(state1).toEqual({
         ...INITIAL_STATE,
-        currentValue: '1',
+        currentValue: new DecimalJS('1'),
+        currentDisplay: '1',
         overwrite: false,
       })
 
       const state2 = reducer(state1, { type: 'decimal', payload: '.' })
       expect(state2).toEqual({
         ...INITIAL_STATE,
-        currentValue: '1.',
+        currentValue: new DecimalJS('1'),
+        currentDisplay: '1.',
         overwrite: false,
       })
 
       const state3 = reducer(state2, { type: 'decimal', payload: '5' })
       expect(state3).toEqual({
         ...INITIAL_STATE,
-        currentValue: '1.5',
+        currentValue: new DecimalJS('1.5'),
+        currentDisplay: '1.5',
         overwrite: false,
       })
     })
@@ -47,14 +53,16 @@ describe('Calculator reducer', () => {
       const state1 = reducer(INITIAL_STATE, { type: 'operator', payload: '-' })
       expect(state1).toEqual({
         ...INITIAL_STATE,
-        currentValue: '-',
+        currentValue: new DecimalJS('0'),
+        currentDisplay: '-',
         overwrite: false,
       })
 
       const state2 = reducer(state1, { type: 'decimal', payload: '1' })
       expect(state2).toEqual({
         ...INITIAL_STATE,
-        currentValue: '-1',
+        currentValue: new DecimalJS('-1'),
+        currentDisplay: '-1',
         overwrite: false,
       })
     })
@@ -63,21 +71,24 @@ describe('Calculator reducer', () => {
       const state1 = reducer(INITIAL_STATE, { type: 'operator', payload: '-' })
       expect(state1).toEqual({
         ...INITIAL_STATE,
-        currentValue: '-',
+        currentValue: new DecimalJS('0'),
+        currentDisplay: '-',
         overwrite: false,
       })
 
       const state2 = reducer(state1, { type: 'decimal', payload: '.' })
       expect(state2).toEqual({
         ...INITIAL_STATE,
-        currentValue: '-0.',
+        currentValue: new DecimalJS('-0'),
+        currentDisplay: '-0.',
         overwrite: false,
       })
 
       const state3 = reducer(state2, { type: 'decimal', payload: '5' })
       expect(state3).toEqual({
         ...INITIAL_STATE,
-        currentValue: '-0.5',
+        currentValue: new DecimalJS('-0.5'),
+        currentDisplay: '-0.5',
         overwrite: false,
       })
     })
@@ -86,14 +97,16 @@ describe('Calculator reducer', () => {
       const state1 = reducer(INITIAL_STATE, { type: 'decimal', payload: '.' })
       expect(state1).toEqual({
         ...INITIAL_STATE,
-        currentValue: '0.',
+        currentValue: new DecimalJS('0'),
+        currentDisplay: '0.',
         overwrite: false,
       })
 
       const state2 = reducer(state1, { type: 'decimal', payload: '1' })
       expect(state2).toEqual({
         ...INITIAL_STATE,
-        currentValue: '0.1',
+        currentValue: new DecimalJS('0.1'),
+        currentDisplay: '0.1',
         overwrite: false,
       })
     })
@@ -102,28 +115,32 @@ describe('Calculator reducer', () => {
       const state1 = reducer(INITIAL_STATE, { type: 'decimal', payload: '.' })
       expect(state1).toEqual({
         ...INITIAL_STATE,
-        currentValue: '0.',
+        currentValue: new DecimalJS('0'),
+        currentDisplay: '0.',
         overwrite: false,
       })
 
       const state2 = reducer(state1, { type: 'decimal', payload: '.' })
       expect(state2).toEqual({
         ...INITIAL_STATE,
-        currentValue: '0.',
+        currentValue: new DecimalJS('0'),
+        currentDisplay: '0.',
         overwrite: false,
       })
 
       const state3 = reducer(state2, { type: 'decimal', payload: '0' })
       expect(state3).toEqual({
         ...INITIAL_STATE,
-        currentValue: '0.0',
+        currentValue: new DecimalJS('0'),
+        currentDisplay: '0.0',
         overwrite: false,
       })
 
       const state4 = reducer(state3, { type: 'decimal', payload: '.' })
       expect(state4).toEqual({
         ...INITIAL_STATE,
-        currentValue: '0.0',
+        currentValue: new DecimalJS('0'),
+        currentDisplay: '0.0',
         overwrite: false,
       })
     })
@@ -132,14 +149,16 @@ describe('Calculator reducer', () => {
       const state1 = reducer(INITIAL_STATE, { type: 'decimal', payload: '0' })
       expect(state1).toEqual({
         ...INITIAL_STATE,
-        currentValue: '0',
+        currentValue: new DecimalJS('0'),
+        currentDisplay: '0',
         overwrite: false,
       })
 
       const state2 = reducer(state1, { type: 'decimal', payload: '0' })
       expect(state2).toEqual({
         ...INITIAL_STATE,
-        currentValue: '0',
+        currentValue: new DecimalJS('0'),
+        currentDisplay: '0',
         overwrite: false,
       })
     })
@@ -150,36 +169,41 @@ describe('Calculator reducer', () => {
       const state1 = reducer(INITIAL_STATE, { type: 'decimal', payload: '2' })
       expect(state1).toEqual({
         ...INITIAL_STATE,
-        currentValue: '2',
+        currentValue: new DecimalJS('2'),
+        currentDisplay: '2',
         overwrite: false,
       })
 
       const state2 = reducer(state1, { type: 'operator', payload: '+' })
       expect(state2).toEqual({
         ...INITIAL_STATE,
-        currentValue: '2',
+        currentValue: new DecimalJS('2'),
+        currentDisplay: '2',
         operator: '+',
-        previousValue: '2',
+        previousValue: new DecimalJS('2'),
         overwrite: true,
       })
 
       const state3 = reducer(state2, { type: 'decimal', payload: '3' })
       expect(state3).toEqual({
         ...INITIAL_STATE,
-        currentValue: '3',
+        currentValue: new DecimalJS('3'),
+        currentDisplay: '3',
         operator: '+',
-        previousValue: '2',
+        previousValue: new DecimalJS('2'),
         overwrite: false,
       })
 
       const state4 = reducer(state3, { type: 'evaluate' })
       expect(state4).toEqual({
-        currentValue: '5',
-        lastOperand: '3',
+        ...INITIAL_STATE,
+        currentValue: new DecimalJS('5'),
+        currentDisplay: '5',
+        lastOperand: new DecimalJS('3'),
         lastOperator: '+',
         operator: null,
         overwrite: true,
-        previousValue: '5',
+        previousValue: new DecimalJS('5'),
       })
     })
 
@@ -187,52 +211,58 @@ describe('Calculator reducer', () => {
       const state1 = reducer(INITIAL_STATE, { type: 'operator', payload: '-' })
       expect(state1).toEqual({
         ...INITIAL_STATE,
-        currentValue: '-',
+        currentValue: new DecimalJS('0'),
+        currentDisplay: '-',
         overwrite: false,
       })
 
       const state2 = reducer(state1, { type: 'decimal', payload: '5' })
       expect(state2).toEqual({
         ...INITIAL_STATE,
-        currentValue: '-5',
+        currentValue: new DecimalJS('-5'),
+        currentDisplay: '-5',
         overwrite: false,
       })
 
       const state3 = reducer(state2, { type: 'operator', payload: '+' })
       expect(state3).toEqual({
         ...INITIAL_STATE,
-        currentValue: '-5',
+        currentValue: new DecimalJS('-5'),
+        currentDisplay: '-5',
         operator: '+',
         overwrite: true,
-        previousValue: '-5',
+        previousValue: new DecimalJS('-5'),
       })
 
       const state4 = reducer(state3, { type: 'decimal', payload: '1' })
       expect(state4).toEqual({
         ...INITIAL_STATE,
-        currentValue: '1',
+        currentValue: new DecimalJS('1'),
+        currentDisplay: '1',
         operator: '+',
         overwrite: false,
-        previousValue: '-5',
+        previousValue: new DecimalJS('-5'),
       })
 
       const state5 = reducer(state4, { type: 'decimal', payload: '0' })
       expect(state5).toEqual({
         ...INITIAL_STATE,
-        currentValue: '10',
+        currentValue: new DecimalJS('10'),
+        currentDisplay: '10',
         operator: '+',
         overwrite: false,
-        previousValue: '-5',
+        previousValue: new DecimalJS('-5'),
       })
 
       const state6 = reducer(state5, { type: 'evaluate' })
       expect(state6).toEqual({
-        currentValue: '5',
-        lastOperand: '10',
+        currentValue: new DecimalJS('5'),
+        currentDisplay: '5',
+        lastOperand: new DecimalJS('10'),
         lastOperator: '+',
         operator: null,
         overwrite: true,
-        previousValue: '5',
+        previousValue: new DecimalJS('5'),
       })
     })
 
@@ -240,20 +270,22 @@ describe('Calculator reducer', () => {
       const state1 = reducer(
         {
           ...INITIAL_STATE,
-          currentValue: '7',
+          currentValue: new DecimalJS('7'),
+          currentDisplay: '7',
           operator: '+',
-          previousValue: '0',
+          previousValue: new DecimalJS('0'),
           overwrite: false,
         },
         { type: 'evaluate' },
       )
       expect(state1).toEqual({
-        currentValue: '7',
-        lastOperand: '7',
+        currentValue: new DecimalJS('7'),
+        currentDisplay: '7',
+        lastOperand: new DecimalJS('7'),
         lastOperator: '+',
         operator: null,
         overwrite: true,
-        previousValue: '7',
+        previousValue: new DecimalJS('7'),
       })
     })
 
@@ -261,20 +293,22 @@ describe('Calculator reducer', () => {
       const state1 = reducer(
         {
           ...INITIAL_STATE,
-          currentValue: '4',
+          currentValue: new DecimalJS('4'),
+          currentDisplay: '4',
           operator: '-',
-          previousValue: '10',
+          previousValue: new DecimalJS('10'),
           overwrite: false,
         },
         { type: 'evaluate' },
       )
       expect(state1).toEqual({
-        currentValue: '6',
-        lastOperand: '4',
+        currentValue: new DecimalJS('6'),
+        currentDisplay: '6',
+        lastOperand: new DecimalJS('4'),
         lastOperator: '-',
         operator: null,
         overwrite: true,
-        previousValue: '6',
+        previousValue: new DecimalJS('6'),
       })
     })
 
@@ -284,20 +318,22 @@ describe('Calculator reducer', () => {
       const state1 = reducer(
         {
           ...INITIAL_STATE,
-          currentValue: '5',
+          currentValue: new DecimalJS('5'),
+          currentDisplay: '5',
           operator: '*',
-          previousValue: '4',
+          previousValue: new DecimalJS('4'),
           overwrite: false,
         },
         { type: 'evaluate' },
       )
       expect(state1).toEqual({
-        currentValue: '20',
-        lastOperand: '5',
+        currentValue: new DecimalJS('20'),
+        currentDisplay: '20',
+        lastOperand: new DecimalJS('5'),
         lastOperator: '*',
         operator: null,
         overwrite: true,
-        previousValue: '20',
+        previousValue: new DecimalJS('20'),
       })
     })
 
@@ -307,20 +343,22 @@ describe('Calculator reducer', () => {
       const state1 = reducer(
         {
           ...INITIAL_STATE,
-          currentValue: '99',
+          currentValue: new DecimalJS('99'),
+          currentDisplay: '99',
           operator: '*',
-          previousValue: '0',
+          previousValue: new DecimalJS('0'),
           overwrite: false,
         },
         { type: 'evaluate' },
       )
       expect(state1).toEqual({
-        currentValue: '0',
-        lastOperand: '99',
+        currentValue: new DecimalJS('0'),
+        currentDisplay: '0',
+        lastOperand: new DecimalJS('99'),
         lastOperator: '*',
         operator: null,
         overwrite: true,
-        previousValue: '0',
+        previousValue: new DecimalJS('0'),
       })
     })
 
@@ -328,20 +366,22 @@ describe('Calculator reducer', () => {
       const state1 = reducer(
         {
           ...INITIAL_STATE,
-          currentValue: '4',
+          currentValue: new DecimalJS('4'),
+          currentDisplay: '4',
           operator: '/',
-          previousValue: '20',
+          previousValue: new DecimalJS('20'),
           overwrite: false,
         },
         { type: 'evaluate' },
       )
       expect(state1).toEqual({
-        currentValue: '5',
-        lastOperand: '4',
+        currentValue: new DecimalJS('5'),
+        currentDisplay: '5',
+        lastOperand: new DecimalJS('4'),
         lastOperator: '/',
         operator: null,
         overwrite: true,
-        previousValue: '5',
+        previousValue: new DecimalJS('5'),
       })
     })
 
@@ -349,20 +389,22 @@ describe('Calculator reducer', () => {
       const state1 = reducer(
         {
           ...INITIAL_STATE,
-          currentValue: '2',
+          currentValue: new DecimalJS('2'),
+          currentDisplay: '2',
           operator: '/',
-          previousValue: '7',
+          previousValue: new DecimalJS('7'),
           overwrite: false,
         },
         { type: 'evaluate' },
       )
       expect(state1).toEqual({
-        currentValue: '3.5',
-        lastOperand: '2',
+        currentValue: new DecimalJS('3.5'),
+        currentDisplay: '3.5',
+        lastOperand: new DecimalJS('2'),
         lastOperator: '/',
         operator: null,
         overwrite: true,
-        previousValue: '3.5',
+        previousValue: new DecimalJS('3.5'),
       })
     })
 
@@ -370,20 +412,22 @@ describe('Calculator reducer', () => {
       const state1 = reducer(
         {
           ...INITIAL_STATE,
-          currentValue: '3',
+          currentValue: new DecimalJS('3'),
+          currentDisplay: '3',
           operator: '/',
-          previousValue: '-15',
+          previousValue: new DecimalJS('-15'),
           overwrite: false,
         },
         { type: 'evaluate' },
       )
       expect(state1).toEqual({
-        currentValue: '-5',
-        lastOperand: '3',
+        currentValue: new DecimalJS('-5'),
+        currentDisplay: '-5',
+        lastOperand: new DecimalJS('3'),
         lastOperator: '/',
         operator: null,
         overwrite: true,
-        previousValue: '-5',
+        previousValue: new DecimalJS('-5'),
       })
     })
 
@@ -391,20 +435,22 @@ describe('Calculator reducer', () => {
       const state1 = reducer(
         {
           ...INITIAL_STATE,
-          currentValue: '0',
+          currentValue: new DecimalJS('0'),
+          currentDisplay: '0',
           operator: '/',
-          previousValue: '5',
+          previousValue: new DecimalJS('5'),
           overwrite: false,
         },
         { type: 'evaluate' },
       )
       expect(state1).toEqual({
-        currentValue: 'Infinity',
-        lastOperand: '0',
+        currentValue: new DecimalJS('Infinity'),
+        currentDisplay: 'Infinity',
+        lastOperand: new DecimalJS('0'),
         lastOperator: '/',
         operator: null,
         overwrite: true,
-        previousValue: 'Infinity',
+        previousValue: new DecimalJS('Infinity'),
       })
     })
 
@@ -413,20 +459,22 @@ describe('Calculator reducer', () => {
         const state1 = reducer(
           {
             ...INITIAL_STATE,
-            currentValue: '0.2',
+            currentValue: new DecimalJS('0.2'),
+            currentDisplay: '0.2',
             operator: '+',
-            previousValue: '0.1',
+            previousValue: new DecimalJS('0.1'),
             overwrite: false,
           },
           { type: 'evaluate' },
         )
         expect(state1).toEqual({
-          currentValue: '0.3',
-          lastOperand: '0.2',
+          currentValue: new DecimalJS('0.3'),
+          currentDisplay: '0.3',
+          lastOperand: new DecimalJS('0.2'),
           lastOperator: '+',
           operator: null,
           overwrite: true,
-          previousValue: '0.3',
+          previousValue: new DecimalJS('0.3'),
         })
       })
 
@@ -434,20 +482,22 @@ describe('Calculator reducer', () => {
         const state1 = reducer(
           {
             ...INITIAL_STATE,
-            currentValue: '0.1',
+            currentValue: new DecimalJS('0.1'),
+            currentDisplay: '0.1',
             operator: '-',
-            previousValue: '0.3',
+            previousValue: new DecimalJS('0.3'),
             overwrite: false,
           },
           { type: 'evaluate' },
         )
         expect(state1).toEqual({
-          currentValue: '0.2',
-          lastOperand: '0.1',
+          currentValue: new DecimalJS('0.2'),
+          currentDisplay: '0.2',
+          lastOperand: new DecimalJS('0.1'),
           lastOperator: '-',
           operator: null,
           overwrite: true,
-          previousValue: '0.2',
+          previousValue: new DecimalJS('0.2'),
         })
       })
 
@@ -455,20 +505,22 @@ describe('Calculator reducer', () => {
         const state1 = reducer(
           {
             ...INITIAL_STATE,
-            currentValue: '3',
+            currentValue: new DecimalJS('3'),
+            currentDisplay: '3',
             operator: '*',
-            previousValue: '0.6',
+            previousValue: new DecimalJS('0.6'),
             overwrite: false,
           },
           { type: 'evaluate' },
         )
         expect(state1).toEqual({
-          currentValue: '1.8',
-          lastOperand: '3',
+          currentValue: new DecimalJS('1.8'),
+          currentDisplay: '1.8',
+          lastOperand: new DecimalJS('3'),
           lastOperator: '*',
           operator: null,
           overwrite: true,
-          previousValue: '1.8',
+          previousValue: new DecimalJS('1.8'),
         })
       })
 
@@ -476,20 +528,22 @@ describe('Calculator reducer', () => {
         const state1 = reducer(
           {
             ...INITIAL_STATE,
-            currentValue: '0.1',
+            currentValue: new DecimalJS('0.1'),
+            currentDisplay: '0.1',
             operator: '/',
-            previousValue: '0.3',
+            previousValue: new DecimalJS('0.3'),
             overwrite: false,
           },
           { type: 'evaluate' },
         )
         expect(state1).toEqual({
-          currentValue: '3',
-          lastOperand: '0.1',
+          currentValue: new DecimalJS('3'),
+          currentDisplay: '3',
+          lastOperand: new DecimalJS('0.1'),
           lastOperator: '/',
           operator: null,
           overwrite: true,
-          previousValue: '3',
+          previousValue: new DecimalJS('3'),
         })
       })
 
@@ -497,20 +551,22 @@ describe('Calculator reducer', () => {
         const state1 = reducer(
           {
             ...INITIAL_STATE,
-            currentValue: '100',
+            currentValue: new DecimalJS('100'),
+            currentDisplay: '100',
             operator: '*',
-            previousValue: '1.005',
+            previousValue: new DecimalJS('1.005'),
             overwrite: false,
           },
           { type: 'evaluate' },
         )
         expect(state1).toEqual({
-          currentValue: '100.5',
-          lastOperand: '100',
+          currentValue: new DecimalJS('100.5'),
+          currentDisplay: '100.5',
+          lastOperand: new DecimalJS('100'),
           lastOperator: '*',
           operator: null,
           overwrite: true,
-          previousValue: '100.5',
+          previousValue: new DecimalJS('100.5'),
         })
       })
     })
@@ -520,20 +576,22 @@ describe('Calculator reducer', () => {
         const state1 = reducer(
           {
             ...INITIAL_STATE,
-            currentValue: '987654321',
+            currentValue: new DecimalJS('987654321'),
+            currentDisplay: '987654321',
             operator: '*',
-            previousValue: '123456789',
+            previousValue: new DecimalJS('123456789'),
             overwrite: false,
           },
           { type: 'evaluate' },
         )
         expect(state1).toEqual({
-          currentValue: '121932631112635269',
-          lastOperand: '987654321',
+          currentValue: new DecimalJS('121932631112635269'),
+          currentDisplay: '121932631112635269',
+          lastOperand: new DecimalJS('987654321'),
           lastOperator: '*',
           operator: null,
           overwrite: true,
-          previousValue: '121932631112635269',
+          previousValue: new DecimalJS('121932631112635269'),
         })
       })
 
@@ -541,20 +599,22 @@ describe('Calculator reducer', () => {
         const state1 = reducer(
           {
             ...INITIAL_STATE,
-            currentValue: '0.0000002',
+            currentValue: new DecimalJS('0.0000002'),
+            currentDisplay: '0.0000002',
             operator: '+',
-            previousValue: '0.0000001',
+            previousValue: new DecimalJS('0.0000001'),
             overwrite: false,
           },
           { type: 'evaluate' },
         )
         expect(state1).toEqual({
-          currentValue: '0.0000003',
-          lastOperand: '0.0000002',
+          currentValue: new DecimalJS('0.0000003'),
+          currentDisplay: '0.0000003',
+          lastOperand: new DecimalJS('0.0000002'),
           lastOperator: '+',
           operator: null,
           overwrite: true,
-          previousValue: '0.0000003',
+          previousValue: new DecimalJS('0.0000003'),
         })
       })
 
@@ -562,20 +622,22 @@ describe('Calculator reducer', () => {
         const state1 = reducer(
           {
             ...INITIAL_STATE,
-            currentValue: '2.75',
+            currentValue: new DecimalJS('2.75'),
+            currentDisplay: '2.75',
             operator: '+',
-            previousValue: '5',
+            previousValue: new DecimalJS('5'),
             overwrite: false,
           },
           { type: 'evaluate' },
         )
         expect(state1).toEqual({
-          currentValue: '7.75',
-          lastOperand: '2.75',
+          currentValue: new DecimalJS('7.75'),
+          currentDisplay: '7.75',
+          lastOperand: new DecimalJS('2.75'),
           lastOperator: '+',
           operator: null,
           overwrite: true,
-          previousValue: '7.75',
+          previousValue: new DecimalJS('7.75'),
         })
       })
 
@@ -583,20 +645,22 @@ describe('Calculator reducer', () => {
         const state1 = reducer(
           {
             ...INITIAL_STATE,
-            currentValue: '3',
+            currentValue: new DecimalJS('3'),
+            currentDisplay: '3',
             operator: '-',
-            previousValue: '10.5',
+            previousValue: new DecimalJS('10.5'),
             overwrite: false,
           },
           { type: 'evaluate' },
         )
         expect(state1).toEqual({
-          currentValue: '7.5',
-          lastOperand: '3',
+          currentValue: new DecimalJS('7.5'),
+          currentDisplay: '7.5',
+          lastOperand: new DecimalJS('3'),
           lastOperator: '-',
           operator: null,
           overwrite: true,
-          previousValue: '7.5',
+          previousValue: new DecimalJS('7.5'),
         })
       })
 
@@ -604,20 +668,22 @@ describe('Calculator reducer', () => {
         const state1 = reducer(
           {
             ...INITIAL_STATE,
-            currentValue: '3',
+            currentValue: new DecimalJS('3'),
+            currentDisplay: '3',
             operator: '/',
-            previousValue: '1',
+            previousValue: new DecimalJS('1'),
             overwrite: false,
           },
           { type: 'evaluate' },
         )
         expect(state1).toEqual({
-          currentValue: '0.33333333333333333333',
-          lastOperand: '3',
+          currentValue: new DecimalJS('0.33333333333333333333'),
+          currentDisplay: '0.33333333333333333333',
+          lastOperand: new DecimalJS('3'),
           lastOperator: '/',
           operator: null,
           overwrite: true,
-          previousValue: '0.33333333333333333333',
+          previousValue: new DecimalJS('0.33333333333333333333'),
         })
       })
 
@@ -625,20 +691,22 @@ describe('Calculator reducer', () => {
         const state1 = reducer(
           {
             ...INITIAL_STATE,
-            currentValue: '6',
+            currentValue: new DecimalJS('6'),
+            currentDisplay: '6',
             operator: '/',
-            previousValue: '1',
+            previousValue: new DecimalJS('1'),
             overwrite: false,
           },
           { type: 'evaluate' },
         )
         expect(state1).toEqual({
-          currentValue: '0.16666666666666666667',
-          lastOperand: '6',
+          currentValue: new DecimalJS('0.16666666666666666667'),
+          currentDisplay: '0.16666666666666666667',
+          lastOperand: new DecimalJS('6'),
           lastOperator: '/',
           operator: null,
           overwrite: true,
-          previousValue: '0.16666666666666666667',
+          previousValue: new DecimalJS('0.16666666666666666667'),
         })
       })
     })

@@ -1,30 +1,38 @@
 import DecimalJS from 'decimal.js'
 
+import {
+  displayToValue,
+  formatNumberInput,
+  formatNumberInputActive,
+} from '../../../../utils/formatters.ts'
+import type { Operator, Decimal } from '../types.ts'
+
 DecimalJS.set({
   toExpNeg: -100,
   toExpPos: 100,
 })
 
-import type { Operator, Decimal } from '../types.ts'
-
 export interface State {
-  currentValue: string
-  previousValue: string | null
+  currentValue: DecimalJS
+  currentDisplay: string
+  previousValue: DecimalJS | null
   operator: Operator | null
   lastOperator: Operator | null
-  lastOperand: string | null
+  lastOperand: DecimalJS | null
   overwrite: boolean
 }
 
 export type Action =
+  | { type: 'setValue'; payload: { currentValue: DecimalJS; currentDisplay: string } }
   | { type: 'decimal'; payload: Decimal }
   | { type: 'operator'; payload: Operator }
   | { type: 'evaluate' }
   | { type: 'backspace' }
   | { type: 'reset' }
 
-export const INITIAL_STATE = {
-  currentValue: '0',
+export const INITIAL_STATE: State = {
+  currentValue: new DecimalJS(0),
+  currentDisplay: '0',
   previousValue: null,
   operator: null,
   lastOperator: null,
@@ -33,10 +41,8 @@ export const INITIAL_STATE = {
 }
 
 // Вспомогательная функция для выполнения операции
-function evaluate(a: string, op: '+' | '-' | '*' | '/', b: string): string {
+function evaluate(x: DecimalJS, op: '+' | '-' | '*' | '/', y: DecimalJS): DecimalJS {
   try {
-    const x = new DecimalJS(a)
-    const y = new DecimalJS(b)
     let result: DecimalJS
 
     switch (op) {
@@ -54,69 +60,100 @@ function evaluate(a: string, op: '+' | '-' | '*' | '/', b: string): string {
         result = x.dividedBy(y)
         break
       default:
-        return a
+        return x
     }
 
     // Strip trailing zeros and return plain string
-    return result.toString()
+    return result
   } catch (e) {
     // Fallback to original on error
-    return a
+    return x
   }
 }
 
 export function reducer(state: State, action: Action): State {
-  const { currentValue, previousValue, operator, lastOperator, lastOperand, overwrite } = state
+  const {
+    currentValue,
+    currentDisplay,
+    previousValue,
+    operator,
+    lastOperator,
+    lastOperand,
+    overwrite,
+  } = state
 
   switch (action.type) {
     case 'decimal': {
       const char = action.payload
 
       if (char === '.') {
-        // Блокируем вторую точку
-        if (currentValue.includes('.')) {
-          return state
-        }
-
         // При перезаписи или если текущий '0'
-        if (overwrite || currentValue === '0') {
-          return { ...state, currentValue: '0.', overwrite: false }
+        if (overwrite || currentDisplay === '0') {
+          return {
+            ...state,
+            currentDisplay: '0.',
+            overwrite: false,
+          }
         }
 
         // Если стоит минус
-        if (currentValue === '-') {
-          return { ...state, currentValue: '-0.', overwrite: false }
+        if (currentDisplay === '-') {
+          return {
+            ...state,
+            currentDisplay: '-0.',
+            currentValue: new DecimalJS(-0),
+            overwrite: false,
+          }
+        }
+
+        // Блокируем вторую точку
+        if (currentDisplay.includes('.')) {
+          return state
         }
       }
 
       // При перезаписи или если текущий '0'
-      if (overwrite || currentValue === '0') {
-        return { ...state, currentValue: char, overwrite: false }
+      if (overwrite || currentDisplay === '0') {
+        return {
+          ...state,
+          currentDisplay: char,
+          currentValue: new DecimalJS(char),
+          overwrite: false,
+        }
       }
 
-      return { ...state, currentValue: currentValue + char, overwrite: false }
+      const newCurrentDisplay = formatNumberInputActive(currentDisplay.replace(/\s+/g, '') + char)
+      const newCurrentValue = new DecimalJS(displayToValue(newCurrentDisplay))
+
+      return {
+        ...state,
+        currentDisplay: newCurrentDisplay,
+        currentValue: newCurrentValue,
+        overwrite: false,
+      }
     }
 
     case 'operator': {
       const newOp = action.payload
 
       // Если начинаем с минуса, значит идет ввод отрицательного числа
-      if (newOp === '-' && state.currentValue === '0' && state.overwrite) {
+      if (newOp === '-' && state.currentDisplay === '0' && state.overwrite) {
         return {
           ...state,
-          currentValue: '-',
+          currentDisplay: '-',
           overwrite: false,
         }
       }
 
       // Если уже есть предыдущее значение и ввод завершён — делаем промежуточный расчёт
-      if (previousValue !== null && !overwrite) {
-        const computed = evaluate(previousValue, operator!, currentValue)
+      if (previousValue !== null && !overwrite && operator) {
+        const computed = evaluate(previousValue, operator, currentValue)
         return {
           ...state,
-          previousValue: computed,
-          operator: newOp,
           currentValue: computed,
+          previousValue: computed,
+          currentDisplay: formatNumberInput(computed), // тут другой форматтер чтобы сократить дробную часть
+          operator: newOp,
           overwrite: true,
         }
       }
@@ -137,6 +174,7 @@ export function reducer(state: State, action: Action): State {
 
         return {
           ...state,
+          currentDisplay: formatNumberInputActive(result.toString()),
           currentValue: result,
           previousValue: result,
           lastOperator: operator,
@@ -151,6 +189,7 @@ export function reducer(state: State, action: Action): State {
         const result = evaluate(currentValue, lastOperator, lastOperand)
         return {
           ...state,
+          currentDisplay: formatNumberInputActive(result.toString()),
           currentValue: result,
           previousValue: result,
           overwrite: true,
@@ -161,22 +200,29 @@ export function reducer(state: State, action: Action): State {
     }
 
     case 'backspace': {
-      if (state.currentValue.length > 1) {
+      if (state.currentDisplay.length > 1) {
+        const newCurrentDisplay = state.currentDisplay.slice(0, -1)
         return {
           ...state,
-          currentValue: state.currentValue.slice(0, -1),
+          currentValue: new DecimalJS(displayToValue(newCurrentDisplay)),
+          currentDisplay: newCurrentDisplay,
         }
       }
 
       return {
         ...state,
-        currentValue: '0',
+        currentDisplay: '0',
+        currentValue: new DecimalJS(0),
         overwrite: true,
       }
     }
 
     case 'reset': {
       return INITIAL_STATE
+    }
+
+    case 'setValue': {
+      return { ...INITIAL_STATE, ...action.payload }
     }
 
     default:

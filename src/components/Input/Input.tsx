@@ -1,11 +1,11 @@
 import clsx from 'clsx'
+import type DecimalJS from 'decimal.js'
 import { memo, useLayoutEffect, useRef } from 'react'
 
 import { Currency } from './Currency'
 import { getCurrencyCode } from './Input.utils.ts'
 import { useSwipe } from '../../hooks/useSwipe'
 import type { CurrencyCode } from '../../types/currencies'
-import { formatNumberInput, formatNumberInputActive } from '../../utils/formatters'
 import { TextFit } from '../TextFit'
 
 import classes from './Input.module.css'
@@ -21,8 +21,8 @@ interface InputProps {
   position: 'left' | 'right'
   active?: boolean
   reverse?: boolean
-  value: string
-  ratio: number | null
+  value: { value: DecimalJS; display: string }
+  ratio: DecimalJS
   codes: CurrencyCode[]
   code: CurrencyCode
   codeOpposite: CurrencyCode
@@ -37,7 +37,7 @@ export const Input = memo(
     code,
     codeOpposite,
     reverse,
-    value = '',
+    value,
     ratio,
     onClick,
     onChange,
@@ -126,10 +126,7 @@ export const Input = memo(
           />
         </div>
         <div className={clsx(classes.value, active && classes.accent)}>
-          <TextFit
-            data-testid={'value-' + position}
-            text={active ? formatNumberInputActive(value) : formatNumberInput(value)}
-          />
+          <TextFit data-testid={'value-' + position} text={value.display} />
         </div>
       </div>
     )

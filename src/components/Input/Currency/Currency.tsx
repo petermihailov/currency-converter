@@ -1,4 +1,5 @@
 import clsx from 'clsx'
+import type DecimalJS from 'decimal.js'
 import { forwardRef, memo } from 'react'
 
 import type { CurrencyCode } from '../../../types/currencies.ts'
@@ -12,7 +13,7 @@ interface CurrencyProps {
   currencyCode: CurrencyCode
   oppositeCode: CurrencyCode
   reverse?: boolean
-  ratio: number | null
+  ratio: DecimalJS
 }
 
 export const Currency = memo(

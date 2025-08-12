@@ -1,6 +1,8 @@
+import DecimalJS, { Decimal } from 'decimal.js'
 import { useEffect, useState, useCallback, useRef } from 'react'
 
 import { Calculator } from './Calculator'
+import type { Action as CalculatorAction } from './Calculator/store/reducer.ts'
 import { getUsdRatio } from '../../api/getUsdRatio'
 import { ButtonSpring } from '../../components/ButtonSpring'
 import { Input } from '../../components/Input'
@@ -8,8 +10,9 @@ import { Tabs } from '../../components/Tabs/Tabs'
 import { TextFit } from '../../components/TextFit'
 import { CURRENCY } from '../../constants'
 import { useAppStorage } from '../../store/reducer'
+import type { CurrencyCode } from '../../types/currencies.ts'
 import { toISODate } from '../../utils/dates.ts'
-import { formatDate } from '../../utils/formatters'
+import { displayToValue, formatDate, formatNumberInput } from '../../utils/formatters'
 
 import classes from './Main.module.css'
 
@@ -19,8 +22,22 @@ interface MainScreenProps {
 
 export const MainScreen = ({ goCurrencies }: MainScreenProps) => {
   const [state, dispatch] = useAppStorage()
-  const [left, setLeft] = useState('0')
-  const [right, setRight] = useState('0')
+  const [left, setLeftUnsafe] = useState({ value: new Decimal('0'), display: '0' })
+  const [right, setRightUnsafe] = useState({ value: new Decimal('0'), display: '0' })
+
+  const setRight = useCallback((next: { value: Decimal; display: string }) => {
+    setRightUnsafe((prev) =>
+      prev.display === next.display && prev.value.eq(next.value) ? prev : next,
+    )
+  }, [])
+
+  const setLeft = useCallback((next: { value: Decimal; display: string }) => {
+    setLeftUnsafe((prev) =>
+      prev.display === next.display && prev.value.eq(next.value) ? prev : next,
+    )
+  }, [])
+
+  const calculatorDispatchRef = useRef<React.Dispatch<CalculatorAction>>()
 
   const refSwapButton = useRef<HTMLButtonElement>(null)
 
@@ -41,75 +58,46 @@ export const MainScreen = ({ goCurrencies }: MainScreenProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // const changeActiveInput = useCallback((active: 'left' | 'right') => {
-  //   if (active === 'left') {
-  //     setLeft()
-  //   } else {
-  //     setRight()
-  //   }
-  //
-  //   // setActiveInput(active)
-  // }, [])
+  const getRatio = useCallback(
+    (code1: CurrencyCode, code2: CurrencyCode) => {
+      if (state.rates) {
+        const c1 = new DecimalJS(state.rates[code1])
+        const c2 = new DecimalJS(state.rates[code2])
 
-  // const inputLeft = useCallback(
-  //   (textValue: string) => {
-  //     setCurrencyLeft((prev) => ({ ...prev, textValue }))
-  //     setCurrencyRight((prev) => ({
-  //       ...prev,
-  //       textValue: convert(textValue, currencyLeft.code, currencyRight.code, ratio),
-  //     }))
-  //   },
-  //   [currencyLeft.code, currencyRight.code, ratio],
-  // )
-  //
-  // const inputRight = useCallback(
-  //   (textValue: string) => {
-  //     setCurrencyRight((prev) => ({ ...prev, textValue }))
-  //     setCurrencyLeft((prev) => ({
-  //       ...prev,
-  //       textValue: convert(textValue, currencyRight.code, currencyLeft.code, ratio),
-  //     }))
-  //   },
-  //   [currencyLeft.code, currencyRight.code, ratio],
-  // )
+        return c1.div(c2)
+      }
 
-  // const onChangeLeft = useCallback(
-  //   (code: CurrencyCode) => {
-  //     setCurrencyLeft((prev) => ({ ...prev, code }))
-  //
-  //     if (activeInput === 'right') {
-  //       setCurrencyLeft((prev) => ({
-  //         ...prev,
-  //         textValue: convert(currencyRight.textValue, currencyRight.code, code, ratio),
-  //       }))
-  //     } else {
-  //       setCurrencyRight((prev) => ({
-  //         ...prev,
-  //         textValue: convert(currencyLeft.textValue, code, currencyRight.code, ratio),
-  //       }))
-  //     }
-  //   },
-  //   [activeInput, currencyLeft.textValue, currencyRight.code, currencyRight.textValue, ratio],
-  // )
-  //
-  // const onChangeRight = useCallback(
-  //   (code: CurrencyCode) => {
-  //     setCurrencyRight((prev) => ({ ...prev, code }))
-  //
-  //     if (activeInput === 'right') {
-  //       setCurrencyLeft((prev) => ({
-  //         ...prev,
-  //         textValue: convert(currencyRight.textValue, code, currencyLeft.code, ratio),
-  //       }))
-  //     } else {
-  //       setCurrencyRight((prev) => ({
-  //         ...prev,
-  //         textValue: convert(currencyLeft.textValue, currencyLeft.code, code, ratio),
-  //       }))
-  //     }
-  //   },
-  //   [activeInput, currencyLeft.code, currencyLeft.textValue, currencyRight.textValue, ratio],
-  // )
+      return new DecimalJS(0)
+    },
+    [state.rates],
+  )
+
+  useEffect(() => {
+    if (state.active === 'right') {
+      const ratio = getRatio(state.leftCode, state.rightCode)
+      const target = right.value.mul(ratio)
+      setLeft({
+        value: target,
+        display: formatNumberInput(target),
+      })
+    } else {
+      const ratio = getRatio(state.rightCode, state.leftCode)
+      const target = left.value.mul(ratio)
+      setRight({
+        value: target,
+        display: formatNumberInput(target),
+      })
+    }
+  }, [
+    getRatio,
+    left.value,
+    right.value,
+    setLeft,
+    setRight,
+    state.active,
+    state.leftCode,
+    state.rightCode,
+  ])
 
   useEffect(() => {
     // пробуем найти rates в кэше за сегодня
@@ -125,56 +113,6 @@ export const MainScreen = ({ goCurrencies }: MainScreenProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // /* Storage sync */
-  // useEffect(() => {
-  //   pairStorage.update({
-  //     left: currencyLeft.code,
-  //     right: currencyRight.code,
-  //     active: activeInput,
-  //   })
-  // }, [currencyRight.code, currencyLeft.code, activeInput])
-
-  // /* Change codes keyboard */
-  // useEffect(() => {
-  //   const code: CurrencyCode = activeInput === 'left' ? currencyLeft.code : currencyRight.code
-  //   const codeOpposite: CurrencyCode =
-  //     activeInput === 'left' ? currencyRight.code : currencyLeft.code
-  //
-  //   const onChange = activeInput === 'left' ? onChangeLeft : onChangeRight
-  //   const onChangeOpposite = activeInput === 'left' ? onChangeRight : onChangeLeft
-  //
-  //   const listener = (e: KeyboardEvent) => {
-  //     if (e.key === 'r') {
-  //       swap()
-  //     }
-  //
-  //     if (e.shiftKey) {
-  //       if (e.code === 'ArrowUp') {
-  //         onChangeOpposite(getCurrencyCode(1, codeOpposite, code))
-  //       }
-  //
-  //       if (e.code === 'ArrowDown') {
-  //         onChangeOpposite(getCurrencyCode(-1, codeOpposite, code))
-  //       }
-  //     } else {
-  //       if (e.code === 'ArrowUp') {
-  //         onChange(getCurrencyCode(1, code, codeOpposite))
-  //       }
-  //
-  //       if (e.code === 'ArrowDown') {
-  //         onChange(getCurrencyCode(-1, code, codeOpposite))
-  //       }
-  //     }
-  //   }
-  //
-  //   document.body.addEventListener('keydown', listener)
-  //
-  //   return () => {
-  //     document.body.removeEventListener('keydown', listener)
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [activeInput, currencyLeft.code, currencyRight.code])
-
   return (
     <div className={classes.app}>
       <Tabs className={classes.tabs} onCurrencyClick={goCurrencies} />
@@ -187,9 +125,26 @@ export const MainScreen = ({ goCurrencies }: MainScreenProps) => {
           code={state.leftCode}
           codes={state.favorites}
           codeOpposite={state.rightCode}
-          onClick={() => dispatch({ type: 'setActive', payload: 'left' })}
-          ratio={null}
-          onChange={(code) => dispatch({ type: 'setLeftCode', payload: code })}
+          onClick={() => {
+            if (state.active !== 'left') {
+              setRightUnsafe((prev) => ({
+                ...prev,
+                value: new Decimal(displayToValue(prev.display)),
+              }))
+              dispatch({ type: 'setActive', payload: 'left' })
+              calculatorDispatchRef.current?.({
+                type: 'setValue',
+                payload: {
+                  currentValue: left.value,
+                  currentDisplay: left.display,
+                },
+              })
+            }
+          }}
+          ratio={getRatio(state.rightCode, state.leftCode)}
+          onChange={(code) => {
+            dispatch({ type: 'setLeftCode', payload: code })
+          }}
         />
 
         <Input
@@ -200,9 +155,26 @@ export const MainScreen = ({ goCurrencies }: MainScreenProps) => {
           code={state.rightCode}
           codes={state.favorites}
           codeOpposite={state.leftCode}
-          onClick={() => dispatch({ type: 'setActive', payload: 'right' })}
-          ratio={null}
-          onChange={(code) => dispatch({ type: 'setRightCode', payload: code })}
+          onClick={() => {
+            if (state.active !== 'right') {
+              setLeftUnsafe((prev) => ({
+                ...prev,
+                value: new Decimal(displayToValue(prev.display)),
+              }))
+              dispatch({ type: 'setActive', payload: 'right' })
+              calculatorDispatchRef.current?.({
+                type: 'setValue',
+                payload: {
+                  currentValue: right.value,
+                  currentDisplay: right.display,
+                },
+              })
+            }
+          }}
+          ratio={getRatio(state.leftCode, state.rightCode)}
+          onChange={(code) => {
+            dispatch({ type: 'setRightCode', payload: code })
+          }}
         />
 
         <ButtonSpring ref={refSwapButton} className={classes.swapButton} onClick={swap}>
@@ -229,7 +201,16 @@ export const MainScreen = ({ goCurrencies }: MainScreenProps) => {
 
       <Calculator
         className={classes.calculator}
-        onChange={state.active === 'right' ? setRight : setLeft}
+        passDispatch={(dispatch) => (calculatorDispatchRef.current = dispatch)}
+        onChange={({ value, display }) => {
+          if (state.active === 'right') {
+            setRight({ value, display })
+            // convert(value)
+          } else {
+            setLeft({ value, display })
+            // convert(value)
+          }
+        }}
       />
     </div>
   )
