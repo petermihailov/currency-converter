@@ -1,3 +1,4 @@
+import DecimalJS from 'decimal.js'
 import type { TouchEventHandler } from 'react'
 import { useEffect, useRef, useState } from 'react'
 
@@ -114,7 +115,7 @@ export const Graph = ({ code1, code2, width, height }: GraphProps) => {
         })}
       </svg>
       <div className={classes.info}>
-        <div>{hint && formatCurrency(code2, hint.ratio)}</div>
+        <div>{hint && formatCurrency(code2, new DecimalJS(hint.ratio))}</div>
         <div>{hint && formatDate(hint.date)}</div>
       </div>
     </div>

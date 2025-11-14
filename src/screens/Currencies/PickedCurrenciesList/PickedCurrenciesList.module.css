@@ -1,0 +1,77 @@
+.list {
+  list-style: none;
+  padding: var(--size-0) 0;
+  margin: 0;
+}
+
+.picked-list {
+  --fade-size: var(--size-1);
+  --list-block-size: calc(var(--item-block-size) * var(--max-elements) + var(--size-0));
+
+  position: relative;
+  flex: none;
+  overflow-y: auto;
+  block-size: var(--list-block-size);
+  mask: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 var(--fade-size),
+    #000 calc(100% - var(--fade-size)),
+    transparent 100%
+  );
+}
+
+.item {
+}
+
+.currency {
+  block-size: var(--item-block-size);
+  inline-size: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--size-0);
+  padding: var(--size-00) 0;
+  cursor: pointer;
+  text-align: start;
+  font-weight: 300;
+  font-size: var(--font-size-1);
+  transition: color 100ms ease-in;
+}
+
+.flag {
+  transform: translateY(1px);
+  pointer-events: none;
+  object-fit: cover;
+  height: var(--size-2);
+  aspect-ratio: 1.3;
+  border-radius: 4px;
+  text-shadow: 0 0 4px #000;
+}
+
+.picked-icon {
+  margin-left: auto;
+  color: #ffcd12;
+  animation: picked 150ms ease-out forwards;
+}
+
+.empty {
+  padding: var(--size-3) var(--size-2);
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-1);
+}
+
+@keyframes picked {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  66% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

@@ -1,0 +1,30 @@
+.flag {
+  transform: translateY(1px);
+  pointer-events: none;
+  object-fit: cover;
+  height: var(--size-2);
+  aspect-ratio: 1.3;
+  border-radius: 4px;
+  text-shadow: 0 0 4px #000;
+}
+
+.picked-icon {
+  margin-left: auto;
+  color: #ffcd12;
+  animation: picked 150ms ease-out forwards;
+}
+
+@keyframes picked {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  66% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
