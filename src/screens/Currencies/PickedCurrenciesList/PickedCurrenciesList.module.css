@@ -5,18 +5,14 @@
 }
 
 .picked-list {
-  --fade-size: var(--size-1);
-  --list-block-size: calc(var(--item-block-size) * var(--max-elements) + var(--size-0));
-
-  position: relative;
   flex: none;
-  overflow-y: auto;
   block-size: var(--list-block-size);
+  overflow-y: auto;
   mask: linear-gradient(
     to bottom,
     transparent 0,
-    #000 var(--fade-size),
-    #000 calc(100% - var(--fade-size)),
+    black var(--size-00),
+    black calc(100% - var(--size-00)),
     transparent 100%
   );
 }

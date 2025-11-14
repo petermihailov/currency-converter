@@ -8,6 +8,7 @@ import { PickedCurrenciesList } from './PickedCurrenciesList'
 import { SearchInput } from './SearchInput'
 import { filterCurrencies } from './utils/filterCurrencies'
 import { ButtonSpring } from '../../components/ButtonSpring'
+import { CollapsibleSection } from '../../components/CollapsibleSection'
 import { CURRENCY } from '../../constants'
 import { useAppStorage } from '../../store/reducer'
 import type { CurrencyCode } from '../../types/currencies'
@@ -71,18 +72,28 @@ const Currencies = ({ className, onBack }: CurrenciesProps) => {
 
       <DragDropContext onDragEnd={handleDragEnd}>
         <div className={classes.lists}>
-          <h2>Picked currencies</h2>
-          <PickedCurrenciesList
-            currencies={filteredFavorites}
-            onRemove={(code) => dispatch({ type: 'removeFavorite', payload: code })}
-          />
+          <CollapsibleSection
+            title="Picked currencies"
+            storageKey="currencies-picked-expanded"
+            itemCount={filteredFavorites.length}
+          >
+            <PickedCurrenciesList
+              currencies={filteredFavorites}
+              onRemove={(code) => dispatch({ type: 'removeFavorite', payload: code })}
+            />
+          </CollapsibleSection>
 
-          <h2>All currencies</h2>
-          <AllCurrenciesList
-            currencies={filteredAllCurrencies}
-            favorites={favorites}
-            onToggle={handleToggleFavorite}
-          />
+          <CollapsibleSection
+            title="All currencies"
+            storageKey="currencies-all-expanded"
+            itemCount={filteredAllCurrencies.length}
+          >
+            <AllCurrenciesList
+              currencies={filteredAllCurrencies}
+              favorites={favorites}
+              onToggle={handleToggleFavorite}
+            />
+          </CollapsibleSection>
         </div>
       </DragDropContext>
 

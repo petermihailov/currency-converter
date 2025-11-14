@@ -4,6 +4,10 @@
   margin: 0;
 }
 
+.all-list {
+  overflow-y: auto;
+}
+
 .all-list .item:nth-child(odd) {
   background-color: #fff1;
 }

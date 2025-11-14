@@ -1,0 +1,74 @@
+/* Корневой контейнер секции - участвует в flex-распределении */
+
+.header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--size-0) 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: opacity 150ms ease-in-out;
+  flex: 0 0 auto;
+}
+
+.header:hover {
+  opacity: 0.8;
+}
+
+.header:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-2);
+}
+
+.title {
+  flex: none;
+  z-index: 1;
+  position: sticky;
+  top: 0;
+  font-weight: 600;
+  font-size: var(--font-size-3);
+  line-height: var(--font-lineheight-0);
+  margin: 0;
+  background-color: var(--color-layer-0);
+}
+
+.icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-3);
+  height: var(--size-3);
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+  color: currentColor;
+}
+
+.icon-vertical {
+  transition:
+    opacity 200ms ease-in-out,
+    transform 200ms ease-in-out;
+  transform-origin: center;
+}
+
+.icon[data-expanded='true'] .icon-vertical {
+  opacity: 0;
+  transform: rotate(90deg);
+}
+
+.icon[data-expanded='false'] .icon-vertical {
+  opacity: 1;
+  transform: rotate(0deg);
+}
+
+.content {
+  overflow: hidden;
+  transition: max-height 300ms ease-in-out;
+}

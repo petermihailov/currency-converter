@@ -13,23 +13,6 @@ html:has(.currencies) {
   padding: var(--size-0);
 }
 
-.currencies h2 {
-  flex: none;
-  z-index: 1;
-  position: sticky;
-  top: 0;
-  font-weight: 600;
-  font-size: var(--font-size-3);
-  line-height: var(--font-lineheight-0);
-  padding: var(--size-0) 0 0;
-  margin: 0;
-  background-color: var(--color-layer-0);
-}
-
-.currencies h2:not(:first-of-type) {
-  margin-top: var(--size-1);
-}
-
 .lists {
   flex: 1;
   display: flex;
