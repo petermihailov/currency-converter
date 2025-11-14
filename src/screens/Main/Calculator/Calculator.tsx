@@ -65,66 +65,68 @@ export const Calculator = memo(({ className, passDispatch, onChange }: Calculato
   }
 
   return (
-    <div
-      className={clsx(className, classes.numpad)}
-      onPointerDown={handleInput}
-      data-testid="calculator"
-    >
-      <ButtonSpring
-        data-operator="reset"
-        className={clsx(classes.accent, classes.reset, classes.roundTopLeft)}
+    <div className={clsx(className, classes.container)}>
+      <div
+        className={clsx(className, classes.numpad)}
+        onPointerDown={handleInput}
+        data-testid="calculator"
       >
-        C
-      </ButtonSpring>
-      <ButtonSpring
-        data-operator="/"
-        className={clsx(classes.accent, state.operator === '/' && classes.highlight)}
-      >
-        ÷
-      </ButtonSpring>
-      <ButtonSpring
-        data-operator="*"
-        className={clsx(classes.accent, state.operator === '*' && classes.highlight)}
-      >
-        ×
-      </ButtonSpring>
-      <ButtonSpring
-        data-operator="backspace"
-        className={clsx(classes.accent, classes.roundTopRight)}
-      >
-        <Icon name="icon.calculator.backspace" />
-      </ButtonSpring>
-      <ButtonSpring data-decimal="7">7</ButtonSpring>
-      <ButtonSpring data-decimal="8">8</ButtonSpring>
-      <ButtonSpring data-decimal="9">9</ButtonSpring>
-      <ButtonSpring
-        data-operator="-"
-        className={clsx(classes.accent, state.operator === '-' && classes.highlight)}
-      >
-        −
-      </ButtonSpring>
-      <ButtonSpring data-decimal="4">4</ButtonSpring>
-      <ButtonSpring data-decimal="5">5</ButtonSpring>
-      <ButtonSpring data-decimal="6">6</ButtonSpring>
-      <ButtonSpring
-        data-operator="+"
-        className={clsx(classes.accent, state.operator === '+' && classes.highlight)}
-      >
-        +
-      </ButtonSpring>
-      <ButtonSpring data-decimal="1">1</ButtonSpring>
-      <ButtonSpring data-decimal="2">2</ButtonSpring>
-      <ButtonSpring data-decimal="3">3</ButtonSpring>
-      <ButtonSpring
-        data-operator="evaluate"
-        className={clsx(classes.accent, classes.result, classes.roundBottomRight)}
-      >
-        =
-      </ButtonSpring>
-      <ButtonSpring data-decimal="0" className={clsx(classes.zero, classes.roundBottomLeft)}>
-        <div style={{ gridColumn: 2 }}>0</div>
-      </ButtonSpring>
-      <ButtonSpring data-decimal=".">.</ButtonSpring>
+        <ButtonSpring
+          data-operator="reset"
+          className={clsx(classes.accent, classes.reset, classes.roundTopLeft)}
+        >
+          C
+        </ButtonSpring>
+        <ButtonSpring
+          data-operator="/"
+          className={clsx(classes.accent, state.operator === '/' && classes.highlight)}
+        >
+          ÷
+        </ButtonSpring>
+        <ButtonSpring
+          data-operator="*"
+          className={clsx(classes.accent, state.operator === '*' && classes.highlight)}
+        >
+          ×
+        </ButtonSpring>
+        <ButtonSpring
+          data-operator="backspace"
+          className={clsx(classes.accent, classes.roundTopRight)}
+        >
+          <Icon name="icon.calculator.backspace" />
+        </ButtonSpring>
+        <ButtonSpring data-decimal="7">7</ButtonSpring>
+        <ButtonSpring data-decimal="8">8</ButtonSpring>
+        <ButtonSpring data-decimal="9">9</ButtonSpring>
+        <ButtonSpring
+          data-operator="-"
+          className={clsx(classes.accent, state.operator === '-' && classes.highlight)}
+        >
+          −
+        </ButtonSpring>
+        <ButtonSpring data-decimal="4">4</ButtonSpring>
+        <ButtonSpring data-decimal="5">5</ButtonSpring>
+        <ButtonSpring data-decimal="6">6</ButtonSpring>
+        <ButtonSpring
+          data-operator="+"
+          className={clsx(classes.accent, state.operator === '+' && classes.highlight)}
+        >
+          +
+        </ButtonSpring>
+        <ButtonSpring data-decimal="1">1</ButtonSpring>
+        <ButtonSpring data-decimal="2">2</ButtonSpring>
+        <ButtonSpring data-decimal="3">3</ButtonSpring>
+        <ButtonSpring
+          data-operator="evaluate"
+          className={clsx(classes.accent, classes.result, classes.roundBottomRight)}
+        >
+          =
+        </ButtonSpring>
+        <ButtonSpring data-decimal="0" className={clsx(classes.zero, classes.roundBottomLeft)}>
+          <div style={{ gridColumn: 2 }}>0</div>
+        </ButtonSpring>
+        <ButtonSpring data-decimal=".">.</ButtonSpring>
+      </div>
     </div>
   )
 })

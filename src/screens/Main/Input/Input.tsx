@@ -4,9 +4,9 @@ import { memo, useLayoutEffect, useRef } from 'react'
 
 import { Currency } from './Currency'
 import { getCurrencyCode } from './Input.utils.ts'
-import { useSwipe } from '../../hooks/useSwipe'
-import type { CurrencyCode } from '../../types/currencies'
-import { TextFit } from '../TextFit'
+import { TextFit } from '../../../components/TextFit'
+import { useSwipe } from '../../../hooks/useSwipe.ts'
+import type { CurrencyCode } from '../../../types/currencies.ts'
 
 import classes from './Input.module.css'
 
@@ -47,12 +47,20 @@ export const Input = memo(
     const refCurrencyPrev = useRef<HTMLDivElement>(null)
     const refCurrencyCurr = useRef<HTMLDivElement>(null)
     const refPrevState = useRef({ code: code })
+    const refSwipeDirection = useRef<'up' | 'down'>('up')
 
     useLayoutEffect(() => {
       const prev = refCurrencyPrev.current!
       const curr = refCurrencyCurr.current!
 
-      if (refPrevState.current.code === getCurrencyCode(1, codes, code, codeOpposite)) {
+      if (refPrevState.current.code === code) {
+        return
+      }
+
+      if (
+        refSwipeDirection.current === 'down' &&
+        refPrevState.current.code === getCurrencyCode(1, codes, code, codeOpposite)
+      ) {
         curr.animate(
           [
             { transform: `translateY(-100%)`, opacity: '0' },
@@ -72,7 +80,10 @@ export const Input = memo(
         )
       }
 
-      if (refPrevState.current.code === getCurrencyCode(-1, codes, code, codeOpposite)) {
+      if (
+        refSwipeDirection.current === 'up' &&
+        refPrevState.current.code === getCurrencyCode(-1, codes, code, codeOpposite)
+      ) {
         curr.animate(
           [
             { transform: `translateY(100%)`, opacity: '0' },
@@ -98,8 +109,14 @@ export const Input = memo(
     // change currency code
 
     useSwipe(refContainer, {
-      onSwipeUp: () => onChange?.(getCurrencyCode(1, codes, code, codeOpposite)),
-      onSwipeDown: () => onChange?.(getCurrencyCode(-1, codes, code, codeOpposite)),
+      onSwipeUp: () => {
+        refSwipeDirection.current = 'up'
+        onChange?.(getCurrencyCode(1, codes, code, codeOpposite))
+      },
+      onSwipeDown: () => {
+        refSwipeDirection.current = 'down'
+        onChange?.(getCurrencyCode(-1, codes, code, codeOpposite))
+      },
     })
 
     return (

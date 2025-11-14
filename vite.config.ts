@@ -31,14 +31,19 @@ export default defineConfig({
       },
 
       manifest: {
-        name: 'Currency',
-        short_name: 'Currency',
+        name: 'iCurrency',
+        short_name: 'iCurrency',
         description: 'Currency converter',
         theme_color: '#000000',
         icons: [
           {
             src: '64.png',
             sizes: '64x64',
+            type: 'image/png',
+          },
+          {
+            src: '180.png',
+            sizes: '180x180',
             type: 'image/png',
           },
           {

@@ -6,10 +6,11 @@
   block-size: 100%;
   max-width: var(--size-8);
   margin-inline: auto;
-  padding-block-end: 3.8rem;
+  padding-block: 7vh;
 }
 
 .display {
+  flex: none;
   overflow: hidden;
   position: relative;
   display: grid;
@@ -81,9 +82,9 @@
   border: 1px solid #fff1;
 }
 
-@media only screen and (orientation: landscape) {
-  .calculator,
-  .tabs {
-    display: none;
-  }
-}
+/*@media only screen and (orientation: landscape) {*/
+/*  .calculator,*/
+/*  .tabs {*/
+/*    display: none;*/
+/*  }*/
+/*}*/

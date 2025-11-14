@@ -1,4 +1,4 @@
-import type { CurrencyCode } from '../../types/currencies.ts'
+import type { CurrencyCode } from '../../../types/currencies.ts'
 
 export const getCurrencyCode = (
   prevOrNext: -1 | 1,

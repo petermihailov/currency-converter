@@ -2,9 +2,9 @@ import clsx from 'clsx'
 import type DecimalJS from 'decimal.js'
 import { forwardRef, memo } from 'react'
 
-import type { CurrencyCode } from '../../../types/currencies.ts'
-import { formatCurrency } from '../../../utils/formatters.ts'
-import { TextFit } from '../../TextFit'
+import { TextFit } from '../../../../components/TextFit'
+import type { CurrencyCode } from '../../../../types/currencies.ts'
+import { formatCurrency } from '../../../../utils/formatters.ts'
 
 import classes from './Currency.module.css'
 
