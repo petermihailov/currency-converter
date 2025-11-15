@@ -9,7 +9,7 @@
 }
 
 .all-list .item:nth-child(odd) {
-  background-color: #fff1;
+  background-color: var(--color-white-2);
 }
 
 .item {

@@ -109,7 +109,7 @@ export const Graph = ({ code1, code2, width, height }: GraphProps) => {
               y={0}
               width={rectWidth}
               height={height}
-              fill={hint && hint.date === values[idx].date ? '#fff2' : 'none'}
+              fill={hint && hint.date === values[idx].date ? 'var(--color-white-3)' : 'none'}
             />
           )
         })}

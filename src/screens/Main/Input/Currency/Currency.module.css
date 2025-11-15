@@ -16,7 +16,6 @@
   line-height: var(--block-size-content);
   font-weight: 800;
   letter-spacing: -0.8px;
-  opacity: 0.85;
   text-transform: uppercase;
   text-shadow: 0 0 4px #000;
 }
@@ -37,7 +36,6 @@
   justify-content: end;
   font-family: var(--font-sans-alt);
   block-size: var(--font-size-1);
-  opacity: 0.5;
   text-shadow: 0 0 2px #000;
 }
 

@@ -16,7 +16,7 @@ export const TextFit = (props: TextFitProps) => {
   useLayoutEffect(() => {
     const span = refSpan.current!
     span.innerText = text
-    refSvg.current?.setAttribute('viewBox', `0 0 ${span.clientWidth + 3} 15`)
+    refSvg.current?.setAttribute('viewBox', `0 0 ${span.clientWidth + 5} 15`)
   }, [text])
 
   return (

@@ -43,7 +43,34 @@
   /* colors */
   --color-accent: #1bf;
   --color-accent-2: #fb0;
-  --color-text: #fffe;
+
+  /* White transparency levels (balanced distribution, minimum step = 0x10)
+     Steps gradually increase: 0x10 → 0x10 → 0x10 → 0x20 → 0x30 → 0x30 → 0x20 → 0x10 → 0x10 */
+  --color-white-0: #ffffff00; /* 0% */
+  --color-white-1: #ffffff15; /* 6% */
+  --color-white-2: #ffffff18; /* 13% */
+  --color-white-3: #ffffff30; /* 19% */
+  --color-white-4: #ffffff50; /* 31% */
+  --color-white-5: #ffffff80; /* 50% */
+  --color-white-6: #ffffffb0; /* 69% */
+  --color-white-7: #ffffffd0; /* 82% */
+  --color-white-8: #ffffffe0; /* 88% */
+  --color-white-9: #fffffff0; /* 94% */
+
+  /* Black transparency levels (balanced distribution, minimum step = 0x10)
+     Steps gradually increase: 0x10 → 0x10 → 0x10 → 0x20 → 0x30 → 0x30 → 0x20 → 0x10 → 0x10 */
+  --color-black-0: #00000000; /* 0% */
+  --color-black-1: #00000010; /* 6% */
+  --color-black-2: #00000020; /* 13% */
+  --color-black-3: #00000030; /* 19% */
+  --color-black-4: #00000050; /* 31% */
+  --color-black-5: #00000080; /* 50% */
+  --color-black-6: #000000b0; /* 69% */
+  --color-black-7: #000000d0; /* 82% */
+  --color-black-8: #000000e0; /* 88% */
+  --color-black-9: #000000f0; /* 94% */
+
+  --color-text: var(--color-white-9);
   --color-layer-0: hsl(240deg 30% 0%);
   --color-layer-1: hsl(240deg 10% 30%);
   --color-layer-2: hsl(240deg 10% 50%);

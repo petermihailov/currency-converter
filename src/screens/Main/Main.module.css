@@ -21,10 +21,10 @@
   padding-inline: var(--size-1);
   background: linear-gradient(
       to right,
-      #fff2 calc(50% - 2px),
-      #0000 calc(50% - 2px),
-      #fff5 calc(50% + 2px),
-      #fff2 0%
+      var(--color-white-2) calc(50% - 2px),
+      var(--color-white-0) calc(50% - 2px),
+      var(--color-white-3) calc(50% + 2px),
+      var(--color-white-2) 0%
     )
     no-repeat;
   background-size: 100% calc(100% - var(--size-2));
@@ -42,9 +42,9 @@
   grid-template-columns: 1fr auto 1fr;
   gap: var(--size-1);
   padding-inline: var(--radius-2);
-  background-color: #fff3;
+  background-color: var(--color-white-3);
   z-index: 1;
-  box-shadow: 0 0 var(--size-1) #0005;
+  box-shadow: 0 0 var(--size-1) var(--color-black-5);
   line-height: var(--size-2);
 }
 
@@ -58,7 +58,6 @@
 
 .currencyName {
   display: flex;
-  opacity: 0.5;
   block-size: var(--font-size-0);
 }
 
@@ -74,12 +73,13 @@
   top: calc(50% - var(--size) / 2);
   width: var(--size);
   height: var(--size);
-  color: #ccc;
-  background-color: #333;
+  color: var(--color-text);
+  background-color: var(--color-white-1);
   border-radius: var(--radius-round);
-  box-shadow: 0 0 var(--size-1) #0005;
+  box-shadow: 0 0 var(--size-1) var(--color-black-5);
   padding: var(--size-0);
-  border: 1px solid #fff1;
+  border: 1px solid var(--color-white-1);
+  backdrop-filter: blur(2px);
 }
 
 /*@media only screen and (orientation: landscape) {*/

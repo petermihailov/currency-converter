@@ -8,6 +8,6 @@
 }
 
 .info {
-  color: #fffa;
+  color: var(--color-white-6);
   font-size: var(--font-size-0);
 }

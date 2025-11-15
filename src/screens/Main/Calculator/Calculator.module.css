@@ -36,17 +36,18 @@
 .numpad > :where(button) {
   display: grid;
   place-items: center;
-  background-color: #fff2;
+  background-color: var(--color-white-2);
   transition: background-color 150ms ease-out;
   border-radius: var(--radius-pill);
   inline-size: 100%;
   block-size: 100%;
   min-inline-size: 0;
   min-block-size: 0;
+  border: 1px solid var(--color-white-1);
 }
 
 .numpad > button:active {
-  background-color: #fff5;
+  background-color: var(--color-white-5);
   transition: background-color 0ms;
 }
 
@@ -71,7 +72,7 @@
 
 .accent {
   font-weight: 500;
-  background-color: #fff3;
+  background-color: var(--color-white-3);
 }
 
 .reset {
@@ -84,5 +85,5 @@
 
 .highlight {
   color: var(--color-text);
-  background-color: var(--color-accent);
+  background-color: var(--color-white-5);
 }
