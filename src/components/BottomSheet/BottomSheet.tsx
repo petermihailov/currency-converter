@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react'
 import { BottomSheet as SpringBottomSheet } from 'react-spring-bottom-sheet'
 
+import { GlassLayer } from '../GlassLayer'
+
 import 'react-spring-bottom-sheet/dist/style.css'
 import classes from './BottomSheet.module.css'
 
@@ -21,6 +23,7 @@ export function BottomSheet({ open, onDismiss, children }: BottomSheetProps) {
       className={classes.sheet}
       scrollLocking
     >
+      <GlassLayer />
       <div className={classes.content}>{children}</div>
     </SpringBottomSheet>
   )

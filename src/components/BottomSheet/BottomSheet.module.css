@@ -1,10 +1,11 @@
 .sheet {
-  /*--rsbs-backdrop-bg: var(--color-black-5);*/
-  --rsbs-bg: var(--color-white-2) !important;
-  /*--rsbs-handle-bg: var(--color-white-4);*/
-  /*--rsbs-max-w: 100vw;*/
-  /*--rsbs-ml: 0;*/
-  --rsbs-overlay-rounded: var(--size-3) !important;
+  --rsbs-backdrop-bg: var(--color-black-5);
+  --rsbs-bg: transparent;
+  --rsbs-handle-bg: var(--color-white-4);
+  --rsbs-max-w: 100vw;
+  --rsbs-ml: 0;
+  --rsbs-overlay-rounded: var(--size-3) var(--size-3) 0 0;
+  position: relative;
 }
 
 .content {
@@ -13,4 +14,6 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  position: relative;
+  z-index: 1;
 }
