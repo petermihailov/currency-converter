@@ -1,0 +1,16 @@
+.sheet {
+  /*--rsbs-backdrop-bg: var(--color-black-5);*/
+  --rsbs-bg: var(--color-white-2) !important;
+  /*--rsbs-handle-bg: var(--color-white-4);*/
+  /*--rsbs-max-w: 100vw;*/
+  /*--rsbs-ml: 0;*/
+  --rsbs-overlay-rounded: var(--size-3) !important;
+}
+
+.content {
+  padding: 0;
+  block-size: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}

@@ -19,10 +19,10 @@
   --font-lineheight-1: 1.4;
 
   /* radius */
-  --radius-0: var(--font-size-00);
-  --radius-1: var(--font-size-0);
-  --radius-2: var(--font-size-2);
-  --radius-3: var(--font-size-4);
+  --radius-0: var(--size-00);
+  --radius-1: var(--size-0);
+  --radius-2: var(--size-1);
+  --radius-3: var(--size-2);
   --radius-pill: 1e5px;
   --radius-round: 50%;
 

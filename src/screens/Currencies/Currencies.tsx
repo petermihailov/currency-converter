@@ -1,45 +1,30 @@
 import clsx from 'clsx'
 import { useMemo, useState } from 'react'
-import { DragDropContext } from 'react-beautiful-dnd'
-import type { DropResult } from 'react-beautiful-dnd'
 
 import { AllCurrenciesList } from './AllCurrenciesList'
 import { PickedCurrenciesList } from './PickedCurrenciesList'
 import { SearchInput } from './SearchInput'
 import { filterCurrencies } from './utils/filterCurrencies'
-import { ButtonSpring } from '../../components/ButtonSpring'
 import { CollapsibleSection } from '../../components/CollapsibleSection'
 import { CURRENCY } from '../../constants'
 import { useAppStorage } from '../../store/reducer'
 import type { CurrencyCode } from '../../types/currencies'
-import { arrayMove } from '../../utils/array-move'
 
 import classes from './Currencies.module.css'
 
 export interface CurrenciesProps {
   className?: string
-  onBack: () => void
+  onBack?: () => void
 }
 
-const Currencies = ({ className, onBack }: CurrenciesProps) => {
+const Currencies = ({ className }: CurrenciesProps) => {
   const [{ favorites }, dispatch] = useAppStorage()
   const [searchQuery, setSearchQuery] = useState('')
 
-  const handleDragEnd = (result: DropResult) => {
-    const { source, destination } = result
-
-    // если был брошен не в списке или на ту же позицию — ничего не делаем
-    if (
-      !destination ||
-      (destination.droppableId === source.droppableId && destination.index === source.index)
-    ) {
-      return
-    }
-
-    // переставляем элементы в массиве
+  const handleReorder = (reorderedCurrencies: CurrencyCode[]) => {
     dispatch({
       type: 'setFavorites',
-      payload: arrayMove(favorites, source.index, destination.index),
+      payload: reorderedCurrencies,
     })
   }
 
@@ -70,38 +55,31 @@ const Currencies = ({ className, onBack }: CurrenciesProps) => {
     <div className={clsx(className, classes.currencies)}>
       <SearchInput value={searchQuery} onChange={setSearchQuery} placeholder="Search..." />
 
-      <DragDropContext onDragEnd={handleDragEnd}>
-        <div className={classes.lists}>
-          <CollapsibleSection
-            title="Picked currencies"
-            storageKey="currencies-picked-expanded"
-            itemCount={filteredFavorites.length}
-          >
-            <PickedCurrenciesList
-              currencies={filteredFavorites}
-              onRemove={(code) => dispatch({ type: 'removeFavorite', payload: code })}
-            />
-          </CollapsibleSection>
+      <div className={classes.lists}>
+        <CollapsibleSection
+          title="Picked currencies"
+          storageKey="currencies-picked-expanded"
+          itemCount={filteredFavorites.length}
+        >
+          <PickedCurrenciesList
+            currencies={filteredFavorites}
+            onRemove={(code) => dispatch({ type: 'removeFavorite', payload: code })}
+            onReorder={handleReorder}
+          />
+        </CollapsibleSection>
 
-          <CollapsibleSection
-            title="All currencies"
-            storageKey="currencies-all-expanded"
-            itemCount={filteredAllCurrencies.length}
-          >
-            <AllCurrenciesList
-              currencies={filteredAllCurrencies}
-              favorites={favorites}
-              onToggle={handleToggleFavorite}
-            />
-          </CollapsibleSection>
-        </div>
-      </DragDropContext>
-
-      {favorites.length >= 2 && (
-        <ButtonSpring onClick={onBack} className={classes.backButton}>
-          Back
-        </ButtonSpring>
-      )}
+        <CollapsibleSection
+          title="All currencies"
+          storageKey="currencies-all-expanded"
+          itemCount={filteredAllCurrencies.length}
+        >
+          <AllCurrenciesList
+            currencies={filteredAllCurrencies}
+            favorites={favorites}
+            onToggle={handleToggleFavorite}
+          />
+        </CollapsibleSection>
+      </div>
     </div>
   )
 }

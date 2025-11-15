@@ -27,11 +27,25 @@
   align-items: center;
   gap: var(--size-0);
   padding: var(--size-00) 0;
-  cursor: pointer;
   text-align: start;
   font-weight: 300;
   font-size: var(--font-size-1);
   transition: color 100ms ease-in;
+}
+
+.drag-handle {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--size-0);
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
 }
 
 .flag {

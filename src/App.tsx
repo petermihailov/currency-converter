@@ -1,15 +1,18 @@
 import { useState } from 'react'
 
+import { BottomSheet } from './components/BottomSheet'
 import { Currencies } from './screens/Currencies'
 import { MainScreen } from './screens/Main'
 
 export const App = () => {
-  const [screen, setScreen] = useState<'main' | 'currencies'>('main')
+  const [isCurrenciesOpen, setIsCurrenciesOpen] = useState(false)
 
-  switch (screen) {
-    case 'currencies':
-      return <Currencies onBack={() => setScreen('main')} />
-    default:
-      return <MainScreen goCurrencies={() => setScreen('currencies')} />
-  }
+  return (
+    <>
+      <MainScreen goCurrencies={() => setIsCurrenciesOpen(true)} />
+      <BottomSheet open={isCurrenciesOpen} onDismiss={() => setIsCurrenciesOpen(false)}>
+        <Currencies />
+      </BottomSheet>
+    </>
+  )
 }
