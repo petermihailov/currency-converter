@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import { useMemo } from 'react'
 
-import { Icon } from '../../../components/Icon'
+import { Indicator } from '../../../components/Indicator'
 import { CURRENCY } from '../../../constants'
 import type { CurrencyCode } from '../../../types/currencies'
 
@@ -43,7 +43,7 @@ export const AllCurrenciesList = ({ currencies, favorites, onToggle }: AllCurren
                 alt={currency.name}
               />
               {currency.name}
-              {isSelected && <Icon className={classes.pickedIcon} name="icon.currencies.picked" />}
+              {isSelected && <Indicator />}
             </button>
           </li>
         )

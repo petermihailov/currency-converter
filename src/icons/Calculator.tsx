@@ -72,7 +72,7 @@ export const CalculatorIconsSprite = () => {
        * UI
        */}
       <symbol id="icon.ui.settings" viewBox="0 0 28 28">
-        <g fill="none" fill-rule="nonzero">
+        <g fill="none" fillRule="nonzero">
           <path d="M0 0h28v28H0z" />
           <path
             fill="currentColor"

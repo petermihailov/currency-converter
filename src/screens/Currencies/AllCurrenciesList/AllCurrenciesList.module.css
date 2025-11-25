@@ -9,7 +9,7 @@
 }
 
 .all-list .item:nth-child(odd) {
-  background-color: var(--color-white-2);
+  /*background-color: var(--color-white-2);*/
 }
 
 .item {
@@ -46,30 +46,9 @@
   text-shadow: 0 0 4px #000;
 }
 
-.picked-icon {
-  margin-left: auto;
-  color: #ffcd12;
-  animation: picked 150ms ease-out forwards;
-}
-
 .empty {
   padding: var(--size-3) var(--size-2);
   text-align: center;
   color: var(--color-text-secondary);
   font-size: var(--font-size-1);
-}
-
-@keyframes picked {
-  0% {
-    opacity: 0;
-    transform: scale(0);
-  }
-  66% {
-    opacity: 1;
-    transform: scale(1.2);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
 }

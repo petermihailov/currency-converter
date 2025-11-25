@@ -1,0 +1,27 @@
+.indicator {
+  margin-left: auto;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ff8f12;
+  /*box-shadow:*/
+  /*  0 0 8px rgba(255, 205, 18, 0.6),*/
+  /*  0 0 12px rgba(255, 205, 18, 0.4),*/
+  /*  0 0 16px rgba(255, 205, 18, 0.2);*/
+  animation: appear 150ms ease-out forwards;
+}
+
+@keyframes appear {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  66% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

@@ -14,17 +14,17 @@ interface BottomSheetProps {
 
 export function BottomSheet({ open, onDismiss, children }: BottomSheetProps) {
   return (
-    <SpringBottomSheet
-      open={open}
-      onDismiss={onDismiss}
-      defaultSnap={({ maxHeight }) => maxHeight * 0.9}
-      snapPoints={({ maxHeight }) => [maxHeight * 0.9]}
-      blocking={false}
-      className={classes.sheet}
-      scrollLocking
-    >
-      <GlassLayer />
-      <div className={classes.content}>{children}</div>
-    </SpringBottomSheet>
+    <>
+      <SpringBottomSheet
+        open={open}
+        onDismiss={onDismiss}
+        snapPoints={({ maxHeight }) => [maxHeight * 0.9]}
+        className={classes.sheet}
+        blocking={false}
+      >
+        <GlassLayer className={classes.glassLayer} />
+        <div className={classes.content}>{children}</div>
+      </SpringBottomSheet>
+    </>
   )
 }

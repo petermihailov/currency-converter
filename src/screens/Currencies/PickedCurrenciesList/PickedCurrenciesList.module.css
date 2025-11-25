@@ -6,15 +6,6 @@
 
 .picked-list {
   flex: none;
-  block-size: var(--list-block-size);
-  overflow-y: auto;
-  mask: linear-gradient(
-    to bottom,
-    transparent 0,
-    black var(--size-00),
-    black calc(100% - var(--size-00)),
-    transparent 100%
-  );
 }
 
 .item {
@@ -59,9 +50,12 @@
 }
 
 .picked-icon {
-  margin-left: auto;
-  color: #ffcd12;
-  animation: picked 150ms ease-out forwards;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
 }
 
 .empty {
@@ -69,19 +63,4 @@
   text-align: center;
   color: var(--color-text-secondary);
   font-size: var(--font-size-1);
-}
-
-@keyframes picked {
-  0% {
-    opacity: 0;
-    transform: scale(0);
-  }
-  66% {
-    opacity: 1;
-    transform: scale(1.2);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
 }

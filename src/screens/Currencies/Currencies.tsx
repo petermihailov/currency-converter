@@ -60,6 +60,7 @@ const Currencies = ({ className }: CurrenciesProps) => {
           title="Picked currencies"
           storageKey="currencies-picked-expanded"
           itemCount={filteredFavorites.length}
+          collapsible={false}
         >
           <PickedCurrenciesList
             currencies={filteredFavorites}
@@ -72,6 +73,7 @@ const Currencies = ({ className }: CurrenciesProps) => {
           title="All currencies"
           storageKey="currencies-all-expanded"
           itemCount={filteredAllCurrencies.length}
+          collapsible={false}
         >
           <AllCurrenciesList
             currencies={filteredAllCurrencies}

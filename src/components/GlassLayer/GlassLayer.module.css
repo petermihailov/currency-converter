@@ -2,16 +2,9 @@
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  background: linear-gradient(135deg, var(--color-white-2) 0%, var(--color-black-1) 100%);
+  backdrop-filter: blur(80px) saturate(180%);
+  -webkit-backdrop-filter: blur(80px) saturate(180%);
   border-radius: inherit;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-}
-
-@supports not (backdrop-filter: blur(20px)) {
-  .glass-layer {
-    background: rgba(20, 20, 40, 0.95);
-  }
+  outline: 2px solid var(--color-white-4);
 }

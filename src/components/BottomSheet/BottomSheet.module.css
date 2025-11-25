@@ -1,19 +1,20 @@
 .sheet {
-  --rsbs-backdrop-bg: var(--color-black-5);
   --rsbs-bg: transparent;
-  --rsbs-handle-bg: var(--color-white-4);
-  --rsbs-max-w: 100vw;
-  --rsbs-ml: 0;
-  --rsbs-overlay-rounded: var(--size-3) var(--size-3) 0 0;
+  --rsbs-handle-bg: var(--color-white-9);
+  --rsbs-overlay-rounded: var(--size-3) !important;
   position: relative;
 }
 
 .content {
   padding: 0;
   block-size: 100%;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
   position: relative;
   z-index: 1;
+}
+
+.glassLayer {
+  min-height: 150%;
+  border-radius: var(--size-2) var(--size-2) 0 0;
 }

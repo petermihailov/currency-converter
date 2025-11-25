@@ -12,6 +12,7 @@ interface CollapsibleSectionProps {
   itemCount?: number
   children: ReactNode
   className?: string
+  collapsible?: boolean
 }
 
 export const CollapsibleSection = ({
@@ -21,6 +22,7 @@ export const CollapsibleSection = ({
   itemCount,
   children,
   className,
+  collapsible = true,
 }: CollapsibleSectionProps) => {
   const sectionId = useId()
   const contentRef = useRef<HTMLDivElement>(null)
@@ -42,11 +44,13 @@ export const CollapsibleSection = ({
   }, [children, isExpanded])
 
   const toggleExpanded = () => {
-    setIsExpanded((prev) => !prev)
+    if (collapsible) {
+      setIsExpanded((prev) => !prev)
+    }
   }
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter' || event.key === ' ') {
+    if (collapsible && (event.key === 'Enter' || event.key === ' ')) {
       event.preventDefault()
       toggleExpanded()
     }
@@ -63,33 +67,42 @@ export const CollapsibleSection = ({
         aria-expanded={isExpanded}
         aria-controls={sectionId}
         type="button"
+        disabled={!collapsible}
+        style={{ cursor: collapsible ? 'pointer' : 'default' }}
       >
         <h2 className={classes.title}>{displayTitle}</h2>
-        <span className={classes.iconWrapper} aria-hidden="true">
-          <svg className={classes.icon} data-expanded={isExpanded} viewBox="0 0 16 16" fill="none">
-            {/* Horizontal line (always visible) */}
-            <line
-              x1="4"
-              y1="8"
-              x2="12"
-              y2="8"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            />
-            {/* Vertical line (hidden when expanded) */}
-            <line
-              className={classes.iconVertical}
-              x1="8"
-              y1="4"
-              x2="8"
-              y2="12"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            />
-          </svg>
-        </span>
+        {collapsible && (
+          <span className={classes.iconWrapper} aria-hidden="true">
+            <svg
+              className={classes.icon}
+              data-expanded={isExpanded}
+              viewBox="0 0 16 16"
+              fill="none"
+            >
+              {/* Horizontal line (always visible) */}
+              <line
+                x1="4"
+                y1="8"
+                x2="12"
+                y2="8"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+              {/* Vertical line (hidden when expanded) */}
+              <line
+                className={classes.iconVertical}
+                x1="8"
+                y1="4"
+                x2="8"
+                y2="12"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+            </svg>
+          </span>
+        )}
       </button>
 
       <div

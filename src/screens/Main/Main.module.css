@@ -29,6 +29,7 @@
     no-repeat;
   background-size: 100% calc(100% - var(--size-2));
   border-radius: var(--radius-3);
+  box-shadow: 0 0 80px 5px #ff8f12;
 }
 
 .info {

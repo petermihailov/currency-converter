@@ -19,7 +19,7 @@ import {
 import { CSS } from '@dnd-kit/utilities'
 import clsx from 'clsx'
 
-import { Icon } from '../../../components/Icon'
+import { Indicator } from '../../../components/Indicator'
 import { CURRENCY } from '../../../constants'
 import type { CurrencyCode } from '../../../types/currencies'
 
@@ -66,7 +66,7 @@ function SortableItem({ code, onRemove }: SortableItemProps) {
         type="button"
         aria-label={`Remove ${CURRENCY[code].name}`}
       >
-        <Icon name="icon.currencies.picked" />
+        <Indicator />
       </button>
     </li>
   )

@@ -76,14 +76,4 @@
 }
 
 .reset {
-  .highlight {
-    color: var(--color-text);
-    background-color: var(--color-white-5);
-  }
-
-  background-color: #ff8f12;
-}
-
-.reset:active {
-  background-color: #ffb561 !important;
 }

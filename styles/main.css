@@ -15,3 +15,8 @@ body {
 #root {
   block-size: 100%;
 }
+
+/* Hide library backdrop completely */
+[data-rsbs-backdrop] {
+  display: none !important;
+}

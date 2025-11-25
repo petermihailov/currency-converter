@@ -1,4 +1,4 @@
-import { Icon } from '../../../components/Icon'
+import { Indicator } from '../../../components/Indicator'
 import { CURRENCY } from '../../../constants'
 import type { CurrencyCode } from '../../../types/currencies'
 
@@ -17,9 +17,7 @@ export const CurrencyItem = ({ code, isSelected, showPickedIcon = true }: Curren
     <>
       <img className={classes.flag} src={`./flags/${code.slice(0, 2)}.webp`} alt={currency.name} />
       {currency.name}
-      {isSelected && showPickedIcon && (
-        <Icon className={classes.pickedIcon} name="icon.currencies.picked" />
-      )}
+      {isSelected && showPickedIcon && <Indicator />}
     </>
   )
 }
