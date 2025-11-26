@@ -8,7 +8,7 @@
 .press-highlight:not(:disabled)::before {
   content: '';
   position: absolute;
-  inset: 0;
+  inset: -4px;
   opacity: calc(1 - var(--scale, 1));
   transform: scale(var(--scale, 1));
   background-color: var(--color-white-9);

@@ -1,4 +1,5 @@
-import { useReducer } from 'react'
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useContext, useReducer, type ReactNode } from 'react'
 
 import { Storage } from '../lib/LocalStorage.ts'
 import type { CodesRatio, CurrencyCode, DateRatio } from '../types/currencies.ts'
@@ -47,7 +48,29 @@ export function appStorageReducer(state: AppStorage, action: AppStorageAction): 
     }
 
     case 'removeFavorite': {
-      appStorage.set({ ...state, favorites: state.favorites.filter((c) => c !== action.payload) })
+      const removedCode = action.payload
+      const oldIndex = state.favorites.indexOf(removedCode)
+      const newFavorites = state.favorites.filter((c) => c !== removedCode)
+
+      if (newFavorites.length === 0) {
+        return state
+      }
+
+      const newState = { ...state, favorites: newFavorites }
+
+      // Если удалённая валюта была выбрана — переключаем на ближайшую
+      const nearestIndex = Math.min(oldIndex, newFavorites.length - 1)
+      const nearestCode = newFavorites[nearestIndex]
+
+      if (state.leftCode === removedCode) {
+        newState.leftCode = nearestCode
+      }
+
+      if (state.rightCode === removedCode) {
+        newState.rightCode = nearestCode
+      }
+
+      appStorage.set(newState)
       return appStorage.get()
     }
 
@@ -101,6 +124,20 @@ export function appStorageReducer(state: AppStorage, action: AppStorageAction): 
   }
 }
 
-export function useAppStorage() {
-  return useReducer(appStorageReducer, appStorage.get())
+type AppStorageContextType = [AppStorage, React.Dispatch<AppStorageAction>]
+
+const AppStorageContext = createContext<AppStorageContextType | null>(null)
+
+export function AppStorageProvider({ children }: { children: ReactNode }) {
+  const value = useReducer(appStorageReducer, appStorage.get())
+  return <AppStorageContext.Provider value={value}>{children}</AppStorageContext.Provider>
+}
+
+export function useAppStorage(): AppStorageContextType {
+  const context = useContext(AppStorageContext)
+  if (!context) {
+    throw new Error('useAppStorage must be used within AppStorageProvider')
+  }
+
+  return context
 }

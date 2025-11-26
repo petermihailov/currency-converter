@@ -200,8 +200,9 @@ export function reducer(state: State, action: Action): State {
     }
 
     case 'backspace': {
-      if (state.currentDisplay.length > 1) {
-        const newCurrentDisplay = state.currentDisplay.slice(0, -1)
+      const rawValue = state.currentDisplay.replace(/\s+/g, '')
+      if (rawValue.length > 1) {
+        const newCurrentDisplay = formatNumberInputActive(rawValue.slice(0, -1))
         return {
           ...state,
           currentValue: new DecimalJS(displayToValue(newCurrentDisplay)),
