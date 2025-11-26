@@ -67,7 +67,7 @@ const ButtonSpring = forwardRef<HTMLButtonElement, ButtonBaseProps>(
     return (
       <button
         ref={mergeRefs([ref, refButton])}
-        className={clsx(className, classes.scale)}
+        className={clsx(className, classes.scale, classes.pressHighlight)}
         {...restProps}
       />
     )

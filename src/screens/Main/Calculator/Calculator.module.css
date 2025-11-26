@@ -46,11 +46,6 @@
   border: 1px solid var(--color-white-1);
 }
 
-.numpad > button:active {
-  background-color: var(--color-white-5);
-  transition: background-color 0ms;
-}
-
 .numpad > button * {
   pointer-events: none;
 }

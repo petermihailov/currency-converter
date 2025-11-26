@@ -1,3 +1,16 @@
 .scale:not(:disabled) {
   transform: scale(var(--scale, 1));
 }
+
+.press-highlight {
+  position: relative;
+}
+.press-highlight:not(:disabled)::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: calc(1 - var(--scale, 1));
+  transform: scale(var(--scale, 1));
+  background-color: var(--color-white-9);
+  border-radius: var(--radius-pill);
+}
