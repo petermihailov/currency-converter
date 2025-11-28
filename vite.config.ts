@@ -35,6 +35,8 @@ export default defineConfig({
         short_name: 'iCurrency',
         description: 'Currency converter',
         theme_color: '#000000',
+        background_color: '#000000',
+        orientation: 'portrait',
         icons: [
           {
             src: '64.png',
