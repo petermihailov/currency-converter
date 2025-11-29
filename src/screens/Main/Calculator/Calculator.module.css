@@ -72,3 +72,8 @@
 
 .reset {
 }
+
+.highlight {
+  border-color: #ff8f12;
+  color: #ff8f12;
+}

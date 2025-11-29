@@ -42,7 +42,7 @@
 
   /* colors */
   --color-accent: #1bf;
-  --color-accent-2: #fb0;
+  --color-accent-2: #ff8f12;
 
   /* White transparency levels (balanced distribution, minimum step = 0x10)
      Steps gradually increase: 0x10 → 0x10 → 0x10 → 0x20 → 0x30 → 0x30 → 0x20 → 0x10 → 0x10 */
