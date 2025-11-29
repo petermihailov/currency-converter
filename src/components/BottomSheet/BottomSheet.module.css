@@ -1,3 +1,7 @@
+[data-rsbs-scroll] {
+  overscroll-behavior: contain;
+}
+
 .sheet {
   --rsbs-bg: transparent;
   --rsbs-handle-bg: var(--color-white-9);
@@ -15,6 +19,6 @@
 }
 
 .glassLayer {
-  min-height: 150%;
+  min-height: 100%;
   border-radius: var(--size-2) var(--size-2) 0 0;
 }

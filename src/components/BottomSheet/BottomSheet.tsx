@@ -1,4 +1,5 @@
-import type { ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import { BottomSheet as SpringBottomSheet } from 'react-spring-bottom-sheet'
 
 import { GlassLayer } from '../GlassLayer'
@@ -13,6 +14,20 @@ interface BottomSheetProps {
 }
 
 export function BottomSheet({ open, onDismiss, children }: BottomSheetProps) {
+  const [overlayEl, setOverlayEl] = useState<Element | null>(null)
+
+  useEffect(() => {
+    if (open) {
+      // Find the overlay element after sheet opens (with small delay for DOM to be ready)
+      requestAnimationFrame(() => {
+        const overlay = document.querySelector('[data-rsbs-overlay]')
+        setOverlayEl(overlay)
+      })
+    } else {
+      setOverlayEl(null)
+    }
+  }, [open])
+
   return (
     <>
       <SpringBottomSheet
@@ -22,9 +37,9 @@ export function BottomSheet({ open, onDismiss, children }: BottomSheetProps) {
         className={classes.sheet}
         blocking={false}
       >
-        <GlassLayer className={classes.glassLayer} />
         <div className={classes.content}>{children}</div>
       </SpringBottomSheet>
+      {overlayEl && createPortal(<GlassLayer className={classes.glassLayer} />, overlayEl)}
     </>
   )
 }

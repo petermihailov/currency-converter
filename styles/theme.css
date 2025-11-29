@@ -71,6 +71,7 @@
   --color-black-9: #000000f0; /* 94% */
 
   --color-text: var(--color-white-9);
+  --color-text-secondary: var(--color-white-7);
   --color-layer-0: hsl(240deg 30% 0%);
   --color-layer-1: hsl(240deg 10% 30%);
   --color-layer-2: hsl(240deg 10% 50%);
