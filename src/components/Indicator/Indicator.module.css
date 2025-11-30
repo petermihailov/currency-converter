@@ -1,4 +1,5 @@
 .indicator {
+  position: relative;
   margin-left: auto;
   width: 8px;
   height: 8px;
@@ -9,6 +10,12 @@
   /*  0 0 12px rgba(255, 205, 18, 0.4),*/
   /*  0 0 16px rgba(255, 205, 18, 0.2);*/
   animation: appear 150ms ease-out forwards;
+}
+
+.indicator::before {
+  content: '';
+  position: absolute;
+  inset: calc(-1 * var(--size-1));
 }
 
 @keyframes appear {
