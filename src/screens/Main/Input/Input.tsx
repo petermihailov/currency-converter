@@ -31,18 +31,7 @@ interface InputProps {
 }
 
 export const Input = memo(
-  ({
-    active,
-    codes,
-    code,
-    codeOpposite,
-    reverse,
-    value,
-    ratio,
-    onClick,
-    onChange,
-    position,
-  }: InputProps) => {
+  ({ active, codes, code, codeOpposite, reverse, value, ratio, onClick, onChange }: InputProps) => {
     const refContainer = useRef<HTMLDivElement>(null)
     const refCurrencyPrev = useRef<HTMLDivElement>(null)
     const refCurrencyCurr = useRef<HTMLDivElement>(null)
@@ -143,7 +132,7 @@ export const Input = memo(
           />
         </div>
         <div className={clsx(classes.value, active && classes.accent)}>
-          <TextFit data-testid={'value-' + position} text={value.display} />
+          <TextFit text={value.display} reverse={reverse} />
         </div>
       </div>
     )
